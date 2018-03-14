@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFFFFF"
+              android:orientation="vertical">
+
+   <com.cretin.studyhelper.view.NoScrollViewPager
+       android:id="@+id/view_pager"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_centerVertical="true"
+       android:layout_weight="1" />
+
+   <include layout="@layout/line"></include>
+
+   <RadioGroup
+       android:id="@+id/rg_group"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@color/app_background_color"
+       android:orientation="horizontal">
+
+      <RadioButton
+          android:id="@+id/rb_01"
+          style="@style/BottomTabStyle"
+          android:checked="false"
+          android:drawableTop="@drawable/btn_tab_01_selector"
+          android:text="首页" />
+
+      <RadioButton
+          android:id="@+id/rb_02"
+          style="@style/BottomTabStyle"
+          android:drawableTop="@drawable/btn_tab_02_selector"
+          android:text="订阅" />
+
+      <RadioButton
+          android:id="@+id/rb_03"
+          style="@style/BottomTabStyle"
+          android:drawableTop="@drawable/btn_tab_03_selector"
+          android:text="学习" />
+
+      <RadioButton
+          android:id="@+id/rb_04"
+          style="@style/BottomTabStyle"
+          android:drawableTop="@drawable/btn_tab_04_selector"
+          android:text="我的" />
+   </RadioGroup>
+
+</LinearLayout>
+

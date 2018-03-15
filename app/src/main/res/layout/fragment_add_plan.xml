@@ -1,0 +1,181 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.cretin.studyhelper.fragment.study.plan.AddPlanFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@color/app_bg_color"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名称："
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="请输入计划名称"
+                android:padding="14dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <include layout="@layout/line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="时间："
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:text="选择开始时间"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/jiantou"
+                />
+
+            <TextView
+                android:id="@+id/tv_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:text="选择结束时间"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <include layout="@layout/line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提醒："
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_tixing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:text="不提醒"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <include layout="@layout/line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:paddingTop="14dp"
+                android:text="备注："
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_beizhu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="left"
+                android:hint="计划的备注(选填)"
+                android:minLines="4"
+                android:padding="14dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <include layout="@layout/line"/>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="添加计划"
+                android:textColor="#2aa515"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/app_bg_color"/>
+
+            <ImageView
+                android:id="@+id/iv_ok"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:padding="15dp"
+                android:src="@mipmap/gou"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

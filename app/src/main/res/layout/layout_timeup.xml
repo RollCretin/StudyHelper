@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/popup_menu_view_background"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/popup_menu_title"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:textColor="#3F51B5"
+        android:text="您有新的提醒"
+        android:textSize="18sp"/>
+
+
+    <ImageView
+        android:id="@+id/shared_wifi_state"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:scaleType="centerInside"
+        android:src="@mipmap/naozhong"/>
+
+    <TextView
+        android:id="@+id/shared_wifi_state_hint"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="提醒内容如下"
+        android:textColor="#6495ED"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/shared_wifi_address"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="好好学习"
+        android:textColor="#6495ED"
+        android:textSize="15sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/shared_wifi_settings"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="我知道了"
+            android:textColor="#FF4081"/>
+    </LinearLayout>
+</LinearLayout>

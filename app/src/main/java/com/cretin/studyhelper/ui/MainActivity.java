@@ -12,6 +12,8 @@ import com.cetin.studyhelper.R;
 import com.cretin.studyhelper.base.BaseActivity;
 import com.cretin.studyhelper.base.BaseFragment;
 import com.cretin.studyhelper.fragment.TestFragment;
+import com.cretin.studyhelper.fragment.me.MeFragment;
+import com.cretin.studyhelper.fragment.study.StudyFragment;
 import com.cretin.studyhelper.utils.UiUtils;
 import com.cretin.studyhelper.view.NoScrollViewPager;
 
@@ -145,9 +147,9 @@ public class MainActivity extends BaseActivity {
             } else if ( position == 1 ) {
                 fragment = new TestFragment();
             } else if ( position == 2 ) {
-                fragment = new TestFragment();
+                fragment = new StudyFragment();
             } else if ( position == 3 ) {
-                fragment = new TestFragment();
+                fragment = new MeFragment();
             }
             if ( fragment != null ) {
                 mFragments.put(position, fragment);// 把创建好的Fragment存放到集合中缓存起来

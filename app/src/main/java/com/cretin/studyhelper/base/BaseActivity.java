@@ -16,9 +16,6 @@ import com.cretin.studyhelper.utils.ViewUtils;
 import com.cretin.studyhelper.view.CustomProgressDialog;
 
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -45,7 +42,7 @@ public abstract class BaseActivity extends ParentActivity {
     private CompositeSubscription mCompositeSubscription;
 
     protected void addSubscription(Subscription s) {
-        if (this.mCompositeSubscription == null) {
+        if ( this.mCompositeSubscription == null ) {
             this.mCompositeSubscription = new CompositeSubscription();
         }
         this.mCompositeSubscription.add(s);
@@ -58,7 +55,7 @@ public abstract class BaseActivity extends ParentActivity {
         setContentView(view);
         initHeadView(view);
         initContentView(view);
-        if (isKitkat) {
+        if ( isKitkat ) {
             view.findViewById(R.id.ll_main_title).setPadding(0, ViewUtils.getStatusBarHeights(), 0, 0);
         }
         initData();
@@ -75,83 +72,64 @@ public abstract class BaseActivity extends ParentActivity {
         initView(v);
     }
 
-    //onResponse子类去实现
-    public abstract class ResultCall<T> implements Callback<T> {
-        @Override
-        public void onResponse(Call<T> call, Response<T> response) {
-            hidProgressView();
-            onResponse(response);
-        }
-
-        protected abstract void onResponse(Response<T> response);
-
-        @Override
-        public void onFailure(Call<T> call, Throwable t) {
-            showErrorView();
-            onError(call, t);
-        }
-
-        protected abstract void onError(Call<T> call, Throwable t);
-    }
-
     //隐藏正在加载视图
     public void hidProgressView() {
-        if (relaLoadContainer != null)
+        if ( relaLoadContainer != null )
             relaLoadContainer.setVisibility(View.GONE);
-        if (animationDrawable != null)
+        if ( animationDrawable != null )
             animationDrawable.stop();
     }
 
     //隐藏头部控件
     public void hidTitleView() {
-        if (llMainTitle != null)
+        if ( llMainTitle != null )
             llMainTitle.setVisibility(View.GONE);
     }
 
     //显示正在加载视图
     public void showProgressView() {
-        if (relaLoadContainer != null && relaLoadContainer.getVisibility() == View.GONE)
+        if ( relaLoadContainer != null && relaLoadContainer.getVisibility() == View.GONE )
             relaLoadContainer.setVisibility(View.VISIBLE);
-        if (animationDrawable != null)
+        if ( animationDrawable != null )
             animationDrawable.start();
     }
 
     //显示加载错误
     public void showErrorView() {
-        if (relaLoadContainer != null && relaLoadContainer.getVisibility() == View.GONE)
+        if ( relaLoadContainer != null && relaLoadContainer.getVisibility() == View.GONE )
             relaLoadContainer.setVisibility(View.VISIBLE);
-        if (animationDrawable != null)
+        if ( animationDrawable != null )
             animationDrawable.stop();
         tvLoadingMsg.setText("加载错误");
     }
 
     //初始化头部视图
     private void initHeadView(View view) {
-        llMainTitle= ( LinearLayout ) view.findViewById(R.id.ll_main_title);
-        tvMainTitle = (TextView) view.findViewById(R.id.tv_title_info);
-        ivMainBack = (ImageView) view.findViewById(R.id.iv_back);
-        ivMainRight = (ImageView) view.findViewById(R.id.iv_right);
-        tvMainRight = (TextView) view.findViewById(R.id.tv_right);
+        llMainTitle = ( LinearLayout ) view.findViewById(R.id.ll_main_title);
+        tvMainTitle = ( TextView ) view.findViewById(R.id.tv_title_info);
+        ivMainBack = ( ImageView ) view.findViewById(R.id.iv_back);
+        ivMainRight = ( ImageView ) view.findViewById(R.id.iv_right);
+        tvMainRight = ( TextView ) view.findViewById(R.id.tv_right);
 
         ivMainBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-                if (onTitleAreaCliclkListener != null)
+                if ( onTitleAreaCliclkListener != null )
                     onTitleAreaCliclkListener.onTitleAreaClickListener(v);
             }
         });
         ivMainRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onTitleAreaCliclkListener != null)
+                if ( onTitleAreaCliclkListener != null )
                     onTitleAreaCliclkListener.onTitleAreaClickListener(v);
             }
         });
         tvMainRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onTitleAreaCliclkListener != null)
+                if ( onTitleAreaCliclkListener != null )
                     onTitleAreaCliclkListener.onTitleAreaClickListener(v);
             }
         });
@@ -163,11 +141,11 @@ public abstract class BaseActivity extends ParentActivity {
      * @param msg
      */
     public void showDialog(String msg) {
-        if (dialog == null) {
+        if ( dialog == null ) {
             dialog = CustomProgressDialog.createDialog(this);
-            if (msg != null && !msg.equals("")) {
-                dialog.setMessage(msg);
-            }
+        }
+        if ( msg != null && !msg.equals("") ) {
+            dialog.setMessage(msg);
         }
         dialog.show();
     }
@@ -176,7 +154,7 @@ public abstract class BaseActivity extends ParentActivity {
      * 关闭对话框
      */
     public void stopDialog() {
-        if (dialog != null && dialog.isShowing()) {
+        if ( dialog != null && dialog.isShowing() ) {
             dialog.dismiss();
         }
     }
@@ -187,13 +165,13 @@ public abstract class BaseActivity extends ParentActivity {
 
     //设置Title
     protected void setMainTitle(String title) {
-        if (!TextUtils.isEmpty(title))
+        if ( !TextUtils.isEmpty(title) )
             tvMainTitle.setText(title);
     }
 
     //设置TitleColor
     protected void setMainTitleColor(String titleColor) {
-        if (!TextUtils.isEmpty(titleColor))
+        if ( !TextUtils.isEmpty(titleColor) )
             setMainTitleColor(Color.parseColor(titleColor));
     }
 
@@ -209,7 +187,7 @@ public abstract class BaseActivity extends ParentActivity {
 
     //设置右边TextView颜色
     protected void setMainTitleRightColor(String tvRightColor) {
-        if (!TextUtils.isEmpty(tvRightColor))
+        if ( !TextUtils.isEmpty(tvRightColor) )
             setMainTitleRightColor(Color.parseColor(tvRightColor));
     }
 
@@ -220,8 +198,8 @@ public abstract class BaseActivity extends ParentActivity {
 
     //设置右边TextView内容
     protected void setMainTitleRightContent(String content) {
-        if (!TextUtils.isEmpty(content)) {
-            if (tvMainRight.getVisibility() == View.GONE)
+        if ( !TextUtils.isEmpty(content) ) {
+            if ( tvMainRight.getVisibility() == View.GONE )
                 tvMainRight.setVisibility(View.VISIBLE);
             tvMainRight.setText(content);
         }
@@ -229,14 +207,14 @@ public abstract class BaseActivity extends ParentActivity {
 
     //设置左边ImageView资源
     protected void setMainLeftIvRes(int res) {
-        if (ivMainBack.getVisibility() == View.GONE)
+        if ( ivMainBack.getVisibility() == View.GONE )
             ivMainBack.setVisibility(View.VISIBLE);
         ivMainBack.setImageResource(res);
     }
 
     //设置又边ImageView资源
     protected void setMainRightIvRes(int res) {
-        if (ivMainRight.getVisibility() == View.GONE)
+        if ( ivMainRight.getVisibility() == View.GONE )
             ivMainRight.setVisibility(View.VISIBLE);
         ivMainRight.setImageResource(res);
     }
@@ -257,7 +235,7 @@ public abstract class BaseActivity extends ParentActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-        if (this.mCompositeSubscription != null) {
+        if ( this.mCompositeSubscription != null ) {
             this.mCompositeSubscription.unsubscribe();
         }
     }

@@ -11,6 +11,50 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:id="@+id/tv_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_button_round_shallow"
+                android:padding="10dp"
+                android:text="普通计划"
+                android:textColor="@color/common_color"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_aim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_button_round_shallow"
+                android:padding="10dp"
+                android:text="定目标"
+                android:textColor="@color/common_color"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_habit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_button_round_shallow"
+                android:padding="10dp"
+                android:text="养习惯"
+                android:textColor="@color/common_color"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
@@ -41,69 +85,302 @@
 
         </LinearLayout>
 
-        <include layout="@layout/line"/>
-
         <LinearLayout
+            android:id="@+id/ll_aim"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="时间："
-                android:textColor="@color/font_black1"
-                android:textSize="14sp"/>
+            <include layout="@layout/line"/>
 
-            <TextView
-                android:id="@+id/tv_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="14dp"
-                android:text="选择开始时间"
-                android:textSize="14sp"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@mipmap/jiantou"
-                />
-
-            <TextView
-                android:id="@+id/tv_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="14dp"
-                android:text="选择结束时间"
-                android:textSize="14sp"/>
-
-        </LinearLayout>
-
-        <include layout="@layout/line"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="提醒："
-                android:textColor="@color/font_black1"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tv_tixing"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="14dp"
-                android:text="不提醒"
-                android:textSize="14sp"/>
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="14dp"
+                    android:paddingTop="14dp"
+                    android:text="我想在"
+                    android:textColor="@color/font_black1"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_settime_aim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="请设置时间"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:paddingBottom="14dp"
+                    android:paddingTop="14dp"
+                    android:text="之前完成"
+                    android:textColor="@color/font_black1"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:inputType="number"
+                    android:id="@+id/ed_sc_aim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:hint="输入时长"
+                    android:padding="14dp"
+                    android:textSize="12sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_timetype_aim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="小时"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_habit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include layout="@layout/line"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="14dp"
+                    android:paddingTop="14dp"
+                    android:text="我想"
+                    android:textColor="@color/font_black1"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_type_habit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="每天"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:paddingBottom="14dp"
+                    android:paddingTop="14dp"
+                    android:text="完成"
+                    android:textColor="@color/font_black1"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:inputType="number"
+                    android:id="@+id/ed_sc_habit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:hint="输入时长"
+                    android:padding="14dp"
+                    android:textSize="12sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_timetype_habit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="小时"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include layout="@layout/line"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="14dp"
+                    android:paddingTop="14dp"
+                    android:text="类型："
+                    android:textColor="@color/font_black1"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_type_djs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="倒计时"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_type_zjs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="正计时"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_type_bjs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:background="@drawable/bg_button_round_shallow"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="不计时"
+                    android:textColor="@color/common_color"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_shichang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/line"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="14dp"
+                        android:paddingTop="14dp"
+                        android:text="时长："
+                        android:textColor="@color/font_black1"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_time_25"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        android:background="@drawable/bg_button_round_shallow"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="5dp"
+                        android:text="25分钟"
+                        android:textColor="@color/common_color"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_time_35"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        android:background="@drawable/bg_button_round_shallow"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="5dp"
+                        android:text="35分钟"
+                        android:textColor="@color/common_color"
+                        android:textSize="12sp"/>
+
+
+                    <TextView
+                        android:id="@+id/tv_time_zdy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        android:background="@drawable/bg_button_round_shallow"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="5dp"
+                        android:text="自定义"
+                        android:textColor="@color/common_color"
+                        android:textSize="12sp"/>
+
+                    <EditText
+                        android:id="@+id/ed_normal_sc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:hint="输入时间"
+                        android:inputType="number"
+                        android:padding="14dp"
+                        android:textSize="12sp"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <include layout="@layout/line"/>
@@ -147,7 +424,6 @@
 
         <include layout="@layout/line"/>
 
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -155,6 +431,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_tips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"

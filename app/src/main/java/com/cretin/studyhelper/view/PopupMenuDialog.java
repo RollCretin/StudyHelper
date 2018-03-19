@@ -46,7 +46,7 @@ public class PopupMenuDialog {
         display = windowManager.getDefaultDisplay();
     }
 
-    public PopupMenuDialog builder() {
+    public PopupMenuDialog builder(String msg) {
         View view = LayoutInflater.from(context).inflate(
                 R.layout.layout_timeup, null);
 
@@ -61,7 +61,8 @@ public class PopupMenuDialog {
 
             }
         });
-
+        sharedWifiStateHint.setText(msg.split("-")[0]);
+        sharedWifiAddress.setText(msg.split("-")[1]);
         Window dialogWindow = dialog.getWindow();
         dialogWindow.setGravity(Gravity.LEFT | Gravity.BOTTOM);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();

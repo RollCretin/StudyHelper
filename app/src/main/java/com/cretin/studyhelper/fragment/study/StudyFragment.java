@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import com.cetin.studyhelper.R;
 import com.cretin.studyhelper.base.BaseFragment;
-import com.cretin.studyhelper.fragment.TestFragment;
+import com.cretin.studyhelper.fragment.study.daily.DailyFragment;
 import com.cretin.studyhelper.fragment.study.plan.PlanFragment;
 import com.cretin.studyhelper.utils.UiUtils;
 
@@ -134,7 +134,7 @@ public class StudyFragment extends BaseFragment {
             if ( position == 0 ) {
                 fragment = new PlanFragment();
             } else if ( position == 1 ) {
-                fragment = new TestFragment();
+                fragment = new DailyFragment();
             }
             if ( fragment != null ) {
                 mFragments.put(position, fragment);// 把创建好的Fragment存放到集合中缓存起来

@@ -1,0 +1,200 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg_color"
+    tools:context="com.cretin.studyhelper.fragment.study.daily.AddDailyFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="日报日期"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/arrow_right"
+                android:gravity="center_vertical"
+                android:hint="请选择时间"
+                android:padding="10dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="学习科目"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/arrow_right"
+                android:gravity="center_vertical"
+                android:hint="请选择"
+                android:padding="10dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="今日完成任务"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_finish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:hint="请输入"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="未完成任务"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_unfinish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:hint="请输入"
+                android:lineSpacingExtra="2dp"
+                android:padding="10dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="学习时长"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/ed_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:hint="请输入数字"
+                android:inputType="number"
+                android:padding="10dp"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="小时"
+                android:textColor="@color/font_black1"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/ed_beizhu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:gravity="left"
+            android:hint="备注"
+            android:minLines="3"
+            android:padding="12dp"
+            android:textColor="@color/font_black1"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_button_round"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="提交"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
+    </LinearLayout>
+</ScrollView>

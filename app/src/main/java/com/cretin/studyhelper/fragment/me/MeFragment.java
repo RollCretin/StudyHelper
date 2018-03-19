@@ -19,13 +19,17 @@ import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.ui.LoginActivity;
 import com.cretin.studyhelper.utils.DataCleanManager;
 import com.cretin.studyhelper.utils.KV;
+import com.cretin.studyhelper.utils.UiUtils;
 import com.cretin.studyhelper.view.CircleImageView;
 import com.cretin.studyhelper.view.MyAlertDialog;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FetchUserInfoListener;
 
 
 /**
@@ -91,25 +95,37 @@ public class MeFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        mUserModel = BmobUser.getCurrentUser(CusUser.class);
-        if ( mUserModel != null ) {
-            KV.put(LocalStorageKeys.USER_INFO, mUserModel);
-        } else
-            mUserModel = KV.get(LocalStorageKeys.USER_INFO);
-        if ( mUserModel != null ) {
-            tvUsername.setText("账号：" + mUserModel.getUsername());
-            String nick = mUserModel.getNickname();
-            if ( TextUtils.isEmpty(nick) )
-                nick = "没有昵称的用户";
-            tvName.setText(nick);
-            tvForgetPsw.setVisibility(View.VISIBLE);
-            tvExit.setVisibility(View.VISIBLE);
-            tvUsername.setVisibility(View.VISIBLE);
-            if ( !TextUtils.isEmpty(mUserModel.getAvatar()) )
-                Picasso.with(mActivity)
-                        .load(mUserModel.getAvatar())
-                        .into(ivPortrait);
-        }
+        BmobUser.fetchUserJsonInfo(new FetchUserInfoListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if ( e == null ) {
+                    mUserModel = new Gson().fromJson(s, CusUser.class);
+                    if ( mUserModel != null ) {
+                        KV.put(LocalStorageKeys.USER_INFO, mUserModel);
+                    }else{
+                        mUserModel = KV.get(LocalStorageKeys.USER_INFO);
+                    }
+
+                    if ( mUserModel != null ) {
+                        tvUsername.setText("账号：" + mUserModel.getUsername());
+                        String nick = mUserModel.getNickname();
+                        if ( TextUtils.isEmpty(nick) )
+                            nick = "没有昵称的用户";
+                        tvName.setText(nick);
+                        tvForgetPsw.setVisibility(View.VISIBLE);
+                        tvExit.setVisibility(View.VISIBLE);
+                        tvUsername.setVisibility(View.VISIBLE);
+                        if ( !TextUtils.isEmpty(mUserModel.getAvatar()) )
+                            Picasso.with(mActivity)
+                                    .load(mUserModel.getAvatar())
+                                    .into(ivPortrait);
+                    }
+                } else {
+                    UiUtils.showToastInAnyThread("用户信息更新失败");
+                    mUserModel = KV.get(LocalStorageKeys.USER_INFO);
+                }
+            }
+        });
 
         try {
             //获取缓存大小

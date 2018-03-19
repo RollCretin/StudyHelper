@@ -1,5 +1,8 @@
 package com.cretin.studyhelper.ui;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -11,11 +14,17 @@ import android.widget.RadioGroup;
 import com.cetin.studyhelper.R;
 import com.cretin.studyhelper.base.BaseActivity;
 import com.cretin.studyhelper.base.BaseFragment;
+import com.cretin.studyhelper.eventbus.TimeUpNotify;
 import com.cretin.studyhelper.fragment.TestFragment;
 import com.cretin.studyhelper.fragment.me.MeFragment;
 import com.cretin.studyhelper.fragment.study.StudyFragment;
+import com.cretin.studyhelper.utils.NotifyHelper;
 import com.cretin.studyhelper.utils.UiUtils;
 import com.cretin.studyhelper.view.NoScrollViewPager;
+import com.cretin.studyhelper.view.PopupMenuDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -158,5 +167,36 @@ public class MainActivity extends BaseActivity {
         } else {
             return fragment;
         }
+    }
+
+    @Subscribe
+    public void timeUpNotify(TimeUpNotify event) {
+        Message message = handler.obtainMessage();
+        message.obj = event.getMsg();
+        handler.sendMessage(message);
+    }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            NotifyHelper.vibrator(MainActivity.this);
+            NotifyHelper.sound(MainActivity.this);
+            new PopupMenuDialog(MainActivity.this).builder(( String ) msg.obj).setCancelable(false)
+                    .setCanceledOnTouchOutside(false).show();
+        }
+    };
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

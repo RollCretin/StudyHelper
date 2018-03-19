@@ -151,6 +151,7 @@ public class RegisterActivity extends BaseActivity {
         user.setMobilePhoneNumber(phone);//设置手机号码（必填）
         user.setPassword(password);
         user.setAvatar("");
+        user.setNickname("");
         //设置用户密码
         user.signOrLogin(code, new SaveListener<CusUser>() {
 

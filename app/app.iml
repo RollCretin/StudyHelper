@@ -151,5 +151,6 @@
     <orderEntry type="library" exported="" name="org.greenrobot:eventbus:3.0.0@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-vector-drawable-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="com.github.gzu-liyujiang.AndroidPicker:Common-1.5.5" level="project" />
+    <orderEntry type="module" module-name="library" exported="" />
   </component>
 </module>

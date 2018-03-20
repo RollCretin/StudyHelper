@@ -21,7 +21,7 @@ public class NotifyHelper {
     public static void sound(Context context) {
         try {
             MediaPlayer player = MediaPlayer.create(context,
-                    Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.yinxiao));
+                    Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.piano));
 //                    Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
             player.start();
         } catch ( Exception e ) {

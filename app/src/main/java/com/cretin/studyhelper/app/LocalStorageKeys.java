@@ -10,6 +10,9 @@ public class LocalStorageKeys {
     //用户登录信息 账号和密码
     public static final String USER_LOGIN_INFO = "USER_LOGIN_INFO";
 
+    //未完成的计时任务
+    public static final String UNFINISH_TASK = "UNFINISH_TASK";
+
 
     //记录当前手机的状态栏高度
     public static final String APP_STATUS_HEIGHT = "APP_STATUS_HEIGHT";

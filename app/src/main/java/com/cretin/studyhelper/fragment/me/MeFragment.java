@@ -12,18 +12,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cetin.studyhelper.R;
 import com.cretin.studyhelper.app.LocalStorageKeys;
+import com.cretin.studyhelper.base.BackFragmentActivity;
 import com.cretin.studyhelper.base.BaseFragment;
 import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.ui.LoginActivity;
+import com.cretin.studyhelper.ui.manager.MeActivityManager;
 import com.cretin.studyhelper.utils.DataCleanManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.UiUtils;
 import com.cretin.studyhelper.view.CircleImageView;
 import com.cretin.studyhelper.view.MyAlertDialog;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -102,7 +104,7 @@ public class MeFragment extends BaseFragment {
                     mUserModel = new Gson().fromJson(s, CusUser.class);
                     if ( mUserModel != null ) {
                         KV.put(LocalStorageKeys.USER_INFO, mUserModel);
-                    }else{
+                    } else {
                         mUserModel = KV.get(LocalStorageKeys.USER_INFO);
                     }
 
@@ -116,7 +118,7 @@ public class MeFragment extends BaseFragment {
                         tvExit.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                         if ( !TextUtils.isEmpty(mUserModel.getAvatar()) )
-                            Picasso.with(mActivity)
+                            Glide.with(mActivity)
                                     .load(mUserModel.getAvatar())
                                     .into(ivPortrait);
                     }
@@ -145,17 +147,17 @@ public class MeFragment extends BaseFragment {
 
     @OnClick( {R.id.rl_me, R.id.tv_pinglunwode, R.id.ll_clearcache, R.id.tv_wodedingdan, R.id.tv_wodejiedan, R.id.tv_yonghuxieyi, R.id.tv_my_love, R.id.tv_forget_psw, R.id.tv_exit} )
     public void onViewClicked(View view) {
-//        Intent intent = null;
-//        Bundle bundle = null;
+        Intent intent = null;
+        Bundle bundle = null;
         switch ( view.getId() ) {
 //            case R.id.tv_pinglunwode:
 //                intent = new Intent(mActivity, MeManager.class);
 //                intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, AllMyCommentFragment.TAG);
 //                break;
-//            case R.id.rl_me:
-//                intent = new Intent(mActivity, MeManager.class);
-//                intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, UserInfoFragment.TAG);
-//                break;
+            case R.id.rl_me:
+                intent = new Intent(mActivity, MeActivityManager.class);
+                intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, UserInfoFragment.TAG);
+                break;
 //            case R.id.tv_my_love:
 //                //我的收藏
 //                intent = new Intent(mActivity, MeManager.class);
@@ -214,8 +216,8 @@ public class MeFragment extends BaseFragment {
 //                intent.putExtra(BaseFragmentActivity.ARGS, bundle);
 //                break;
         }
-//        if ( intent != null )
-//            mActivity.startActivity(intent);
+        if ( intent != null )
+            mActivity.startActivity(intent);
     }
 
     //

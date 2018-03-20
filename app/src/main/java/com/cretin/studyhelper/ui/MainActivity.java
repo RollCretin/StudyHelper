@@ -1,5 +1,6 @@
 package com.cretin.studyhelper.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,12 +13,19 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cetin.studyhelper.R;
+import com.cretin.studyhelper.app.LocalStorageKeys;
+import com.cretin.studyhelper.base.BackFragmentActivity;
 import com.cretin.studyhelper.base.BaseActivity;
 import com.cretin.studyhelper.base.BaseFragment;
+import com.cretin.studyhelper.base.BaseFragmentActivity;
 import com.cretin.studyhelper.eventbus.TimeUpNotify;
 import com.cretin.studyhelper.fragment.TestFragment;
 import com.cretin.studyhelper.fragment.me.MeFragment;
 import com.cretin.studyhelper.fragment.study.StudyFragment;
+import com.cretin.studyhelper.fragment.study.plan.PlaningFragment;
+import com.cretin.studyhelper.model.UnfinishedTaskModel;
+import com.cretin.studyhelper.ui.manager.PlaningActivityManager;
+import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.NotifyHelper;
 import com.cretin.studyhelper.utils.UiUtils;
 import com.cretin.studyhelper.view.NoScrollViewPager;
@@ -57,6 +65,17 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        //检查有没有数据没有处理完
+        UnfinishedTaskModel unfinishedTaskModel = KV.get(LocalStorageKeys.UNFINISH_TASK);
+        if ( unfinishedTaskModel != null ) {
+            Intent intent = new Intent(this, PlaningActivityManager.class);
+            intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, PlaningFragment.TAG);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("bean", unfinishedTaskModel);
+            intent.putExtra(BaseFragmentActivity.ARGS, bundle);
+            startActivity(intent);
+        }
+
         viewPager.setAdapter(new MainAdapter(getSupportFragmentManager()));
         //ViewPager缓存4个界面
         viewPager.setOffscreenPageLimit(4);

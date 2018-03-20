@@ -152,6 +152,12 @@ public class RegisterActivity extends BaseActivity {
         user.setPassword(password);
         user.setAvatar("");
         user.setNickname("");
+        user.setQq("");
+        user.setSex("女");
+        user.setBirthday("");
+        user.setSignature("");
+        user.setWeibo("");
+        user.setWeixin("");
         //设置用户密码
         user.signOrLogin(code, new SaveListener<CusUser>() {
 

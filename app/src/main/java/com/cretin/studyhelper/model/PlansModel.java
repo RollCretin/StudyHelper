@@ -9,7 +9,7 @@ import cn.bmob.v3.BmobObject;
  * 计划的数据类型
  */
 
-public class PlansModel extends BmobObject {
+public class PlansModel extends BmobObject{
     public static final int PLAN_TYPE_NORMAL = 0;
     public static final int PLAN_TYPE_AIM = 1;
     public static final int PLAN_TYPE_HABIT = 2;
@@ -57,6 +57,7 @@ public class PlansModel extends BmobObject {
     public void setSingleTimeModelList(List<PlanSingleTimeModel> singleTimeModelList) {
         this.singleTimeModelList = singleTimeModelList;
     }
+
 
     public int getCurrFlag() {
         return currFlag;

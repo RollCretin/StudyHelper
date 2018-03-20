@@ -9,7 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.cetin.studyhelper.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -22,10 +24,15 @@ import com.cretin.studyhelper.eventbus.StydyDataRegreshNotify;
 import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.PlanSingleTimeModel;
 import com.cretin.studyhelper.model.PlansModel;
+import com.cretin.studyhelper.model.UnfinishedTaskModel;
+import com.cretin.studyhelper.ui.manager.PlaningActivityManager;
 import com.cretin.studyhelper.ui.manager.StudyActivityManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.StringUtils;
 import com.cretin.studyhelper.utils.UiUtils;
+import com.cretin.studyhelper.view.MyAlertDialog;
+import com.hmy.popwindow.PopItemAction;
+import com.hmy.popwindow.PopWindow;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,12 +42,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 
 import butterknife.Bind;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,10 +65,6 @@ public class PlanFragment extends BaseFragment {
 
     private ListAdapter adapter;
 
-    //计时器 轮询任务
-    private List<String> taskStartTime;
-    private Timer timer;
-
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_plan;
@@ -71,7 +74,6 @@ public class PlanFragment extends BaseFragment {
     protected void initView(View contentView, Bundle savedInstanceState) {
         hidTitleView();
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        taskStartTime = new ArrayList<>();
         swipeRefresh.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -113,19 +115,20 @@ public class PlanFragment extends BaseFragment {
                 getData(currPage);
             }
         }, recyclerview);
+        adapter.setEmptyView(R.layout.empty_view);
         recyclerview.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                showDetailsDialog(position);
+                showDetailsDialog(position);
             }
         });
 
         adapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-//                showPopWindow(position, adapter);
+                showPopWindow(position, adapter);
                 return false;
             }
         });
@@ -140,123 +143,135 @@ public class PlanFragment extends BaseFragment {
      * //     * @param position
      * //     * @param adapter
      */
-//    private void showPopWindow(final int position, BaseQuickAdapter adapter) {
-//        final PlanModel planModel = list.get(position);
-//
-//        if ( planModel.getCurrFlag() == 0 ) {
-//            //进行中
-//            PopWindow popWindow = new PopWindow.Builder(mActivity)
-//                    .setStyle(PopWindow.PopWindowStyle.PopUp)
-//                    .setTitle("请选择")
-//                    .addItemAction(new PopItemAction("编辑计划", PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-//                        @Override
-//                        public void onClick() {
-//                            //去编辑
-//                            editPlan(planModel);
-//                        }
-//                    }))
-//                    .addItemAction(new PopItemAction("删除计划", PopItemAction.PopItemStyle.Warning, new PopItemAction.OnClickListener() {
-//                        @Override
-//                        public void onClick() {
-//                            delete(position, planModel);
-//                        }
-//                    }))
-//                    .addItemAction(new PopItemAction("取消", PopItemAction.PopItemStyle.Cancel))
-//                    .create();
-//            popWindow.show();
-//        } else {
-//            PopWindow popWindow = new PopWindow.Builder(mActivity)
-//                    .setStyle(PopWindow.PopWindowStyle.PopUp)
-//                    .setTitle("请选择")
-//                    .addItemAction(new PopItemAction("删除计划", PopItemAction.PopItemStyle.Warning, new PopItemAction.OnClickListener() {
-//                        @Override
-//                        public void onClick() {
-//                            //去删除
-//                            delete(position, planModel);
-//                        }
-//                    }))
-//                    .addItemAction(new PopItemAction("取消", PopItemAction.PopItemStyle.Cancel))
-//                    .create();
-//            popWindow.show();
-//        }
-//    }
+    private void showPopWindow(final int position, BaseQuickAdapter adapter) {
+        final PlansModel planModel = list.get(position);
+        PopWindow.Builder builder = new PopWindow.Builder(mActivity);
+        builder.setStyle(PopWindow.PopWindowStyle.PopUp);
+        builder.addItemAction(new PopItemAction("查看详细数据", PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+            @Override
+            public void onClick() {
+                showDetailsDialog(position);
+            }
+        }));
+        if ( planModel.getCurrFlag() == 0 ) {
+            //进行中
+            if ( planModel.getPlanType() == PlansModel.PLAN_TYPE_AIM ) {
+                //目标
+                try {
+                    int left = StringUtils.differentDays(new Date(), simpleDateFormat.parse(planModel.getAimEndTime()));
+                    if ( left <= 0 ) {
+                        //已过期
+                    } else {
+                        //未过期
+                        builder.addItemAction(new PopItemAction("编辑计划", PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                            @Override
+                            public void onClick() {
+                                //去编辑
+                                editPlan(planModel);
+                            }
+                        }));
+                    }
+                } catch ( ParseException e ) {
+                    e.printStackTrace();
+                }
+            } else {
+                builder.addItemAction(new PopItemAction("编辑计划", PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        //去编辑
+                        editPlan(planModel);
+                    }
+                }));
+            }
+        }
+        builder.addItemAction(new PopItemAction("删除计划", PopItemAction.PopItemStyle.Warning, new PopItemAction.OnClickListener() {
+            @Override
+            public void onClick() {
+                delete(position, planModel);
+            }
+        })).addItemAction(new PopItemAction("取消", PopItemAction.PopItemStyle.Cancel));
+        builder.create().show();
+    }
 
-//    private void delete(final int position, PlanModel planModel) {
-//        showDialog("请稍后...");
-//        planModel.delete(new UpdateListener() {
-//            @Override
-//            public void done(BmobException e) {
-//                if ( e == null ) {
-//                    //去删除
-//                    list.remove(position);
-//                    handlerData(list);
-//                    PlanFragment.this.adapter.notifyItemRemoved(position);
-//                    PlanFragment.this.adapter.notifyItemRangeChanged(position, 1);
-//                    UiUtils.showToastInAnyThread("删除成功");
-//                } else {
-//                    UiUtils.showToastInAnyThreadFail();
-//                }
-//                stopDialog();
-//            }
-//        });
-//    }
+    private void delete(final int position, PlansModel planModel) {
+        showDialog("请稍后...");
+        planModel.delete(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if ( e == null ) {
+                    //去删除
+                    list.remove(position);
+                    PlanFragment.this.adapter.notifyItemRemoved(position);
+                    PlanFragment.this.adapter.notifyItemRangeChanged(position, 1);
+                    UiUtils.showToastInAnyThread("删除成功");
+                } else {
+                    UiUtils.showToastInAnyThreadFail();
+                }
+                stopDialog();
+            }
+        });
+    }
 
-//    //编辑计划
-//    private void editPlan(PlanModel planModel) {
-//        Intent intent = new Intent(mActivity, StudyActivityManager.class);
-//        intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, AddPlanFragment.TAG);
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("type", AddPlanFragment.TYPE_EDIT);
-//        bundle.putString("id", planModel.getObjectId());
-//        intent.putExtra(BaseFragmentActivity.ARGS, bundle);
-//        mActivity.startActivity(intent);
-//    }
+    //编辑计划
+    private void editPlan(PlansModel planModel) {
+        Intent intent = new Intent(mActivity, StudyActivityManager.class);
+        intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, AddPlanFragment.TAG);
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", AddPlanFragment.TYPE_EDIT);
+        bundle.putString("id", planModel.getObjectId());
+        intent.putExtra(BaseFragmentActivity.ARGS, bundle);
+        mActivity.startActivity(intent);
+    }
 
     private SimpleDateFormat simpleDateFormat;
 
-//    private void showDetailsDialog(int position) {
-//        if ( simpleDateFormat == null )
-//            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//        View view = View.inflate(mActivity, R.layout.layout_plan_details, null);
-//        final MyAlertDialog myAlertDialog = new MyAlertDialog(mActivity, view);
-//        myAlertDialog.show();
-//        PlanModel planModel = list.get(position);
-//        String flag = "";
-//        if ( planModel.getCurrFlag() == 0 ) {
-//            //进行中
-//            //根据时间来判断当前状态
-//            try {
-//                long currTime = System.currentTimeMillis();
-//                long startTime = simpleDateFormat.parse(planModel.getStartTime()).getTime();
-//                long endTime = simpleDateFormat.parse(planModel.getEndTime()).getTime();
-//                if ( currTime < startTime ) {
-//                    flag = "未开始...";
-//                } else if ( currTime < endTime ) {
-//                    flag = "进行中...";
-//                } else {
-//                    flag = "已超时...";
-//                }
-//            } catch ( ParseException e ) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            //已完成
-//            flag = "已完成...";
-//        }
-//        String content = "开始时间：" + planModel.getStartTime() + "\n结束时间：" + planModel.getEndTime()
-//                + "\n当前状态：" + flag + "\n备注：\n" + (TextUtils.isEmpty(planModel.getRemark()) ? "无" :
-//                planModel.getRemark());
-//        (( TextView ) view.findViewById(R.id.tv_content)).setText(content);
-//        (( TextView ) view.findViewById(R.id.tv_title)).setText(planModel.getTitle());
-//
-//        //给确定添加点击事件
-//        view.findViewById(R.id.tv_iknow).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                myAlertDialog.dismiss();
-//            }
-//        });
-//    }
+    private void showDetailsDialog(int position) {
+        if ( simpleDateFormat == null )
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        View view = View.inflate(mActivity, R.layout.layout_plan_details, null);
+        final MyAlertDialog myAlertDialog = new MyAlertDialog(mActivity, view);
+        myAlertDialog.show();
+        PlansModel planModel = list.get(position);
+        String flag = "";
+        if ( planModel.getCurrFlag() == 0 ) {
+            //进行中
+            if ( planModel.getPlanType() == PlansModel.PLAN_TYPE_AIM ) {
+                //目标
+                try {
+                    int left = StringUtils.differentDays(new Date(), simpleDateFormat.parse(planModel.getAimEndTime()));
+                    if ( left <= 0 ) {
+                        //已过期
+                        flag = "未执行，已过期\n过期时间：" + planModel.getAimEndTime();
+                    } else {
+                        //未过期
+                        flag = "执行中，未过期\n过期时间：" + planModel.getAimEndTime();
+                    }
+                } catch ( ParseException e ) {
+                    e.printStackTrace();
+                }
+            } else {
+                //普通
+                flag = "未执行，等待执行";
+            }
+        } else {
+            //已完成
+            flag = "已完成...\n完成时间：" + planModel.getUpdatedAt();
+        }
+        String content = "当前状态：" + flag + "\n类型：" +
+                (planModel.getPlanType() == PlansModel.PLAN_TYPE_AIM ? "目标计划" : "普通计划") +
+                "\n备注：\n" + (TextUtils.isEmpty(planModel.getRemark()) ? "无" :
+                planModel.getRemark());
+        (( TextView ) view.findViewById(R.id.tv_content)).setText(content);
+        (( TextView ) view.findViewById(R.id.tv_title)).setText(planModel.getPlanName());
+
+        //给确定添加点击事件
+        view.findViewById(R.id.tv_iknow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myAlertDialog.dismiss();
+            }
+        });
+    }
 
     private int currPage;
 
@@ -295,91 +310,6 @@ public class PlanFragment extends BaseFragment {
         }
     }
 
-    /**
-     * 处理数据
-     * <p>
-     * //     * @param list
-     */
-//    private void handlerData(final List<PlanModel> list) {
-//        if ( simpleDateFormat == null ) {
-//            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//        }
-//        if ( !list.isEmpty() ) {
-//            //根据状态先排序
-//            Collections.sort(list);
-//            ////当前状态 0 进行中 1 已完成
-//            int state = -1;
-//            taskStartTime.clear();
-//            if ( timer != null ) {
-//                timer.cancel();
-//                timer = null;
-//            }
-//            for ( PlanModel p :
-//                    list ) {
-//                if ( p.getRemindFlag() != 0 ) {
-//                    long time = 0;
-//                    //开启了提醒 0 不提醒 1 提前5分钟 2 提前10分钟 3 提前半小时 4 提前一小时
-//                    switch ( p.getRemindFlag() ) {
-//                        case 1:
-//                            time = 5 * 60;
-//                            break;
-//                        case 2:
-//                            time = 10 * 60;
-//                            break;
-//                        case 3:
-//                            time = 30 * 60;
-//                            break;
-//                        case 4:
-//                            time = 60 * 60;
-//                            break;
-//                    }
-//
-//                    try {
-//                        //计算本来应该开始提醒的时间 s 为单位
-//                        long startTime = simpleDateFormat.parse(p.getStartTime()).getTime() / 1000 - time;
-//                        if ( startTime > (System.currentTimeMillis() + 10 * 1000) / 1000 ) {
-//                            String msg = p.getTitle() + "-" + StringUtils.formatTimeStr(p.getStartTimeValue(),
-//                                    "yy/MM/dd HH:mm") + "~" +
-//                                    StringUtils.formatTimeStr(p.getEndTimeValue(), "yy/MM/dd HH:mm");
-//                            taskStartTime.add(startTime + "#" + msg);
-//                        }
-//                    } catch ( ParseException e ) {
-//
-//                    }
-//                }
-//                if ( p.getCurrFlag() != state ) {
-//                    p.setFirst(true);
-//                    state = p.getCurrFlag();
-//                } else {
-//                    p.setFirst(false);
-//                }
-//            }
-//
-//            if ( !taskStartTime.isEmpty() ) {
-//                Collections.sort(taskStartTime);
-//                //有任务
-//                timer = new Timer();
-//                timer.schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        long currTime = System.currentTimeMillis() / 1000;
-//                        Log.e("HHHHHHH", "" + currTime + "    " + taskStartTime.get(0).split("#")[0]);
-//                        if ( currTime == Long.parseLong(taskStartTime.get(0).split("#")[0]) ) {
-//                            //发起通知
-//                            EventBus.getDefault().post(new TimeUpNotify(taskStartTime.get(0).split("#")[1]));
-//                            taskStartTime.remove(0);
-//                            if ( taskStartTime.isEmpty() ) {
-//                                timer.cancel();
-//                                timer = null;
-//                                getData(0);
-//                            }
-//                        }
-//                    }
-//                }, 0, 1000);
-//            }
-//        }
-//    }
-
     class ListAdapter extends BaseQuickAdapter<PlansModel, BaseViewHolder> {
 
         public ListAdapter(List list) {
@@ -390,22 +320,51 @@ public class PlanFragment extends BaseFragment {
         protected void convert(final BaseViewHolder helper, final PlansModel item) {
             helper.setText(R.id.tv_title, item.getPlanName());
 
+            if ( item.getCurrFlag() == 0 ) {
+                //未过期
+                helper.setBackgroundRes(R.id.ll_container, R.drawable.bg_button_round);
+                helper.setText(R.id.tv_start, "开始");
+                helper.getView(R.id.tv_start).setEnabled(true);
+            } else {
+                //已完成
+                helper.setBackgroundRes(R.id.ll_container, R.drawable.bg_button_round_gray);
+                helper.setText(R.id.tv_start, "已完成");
+                helper.getView(R.id.tv_start).setEnabled(false);
+            }
+
             if ( item.getPlanType() == PlansModel.PLAN_TYPE_AIM ) {
                 //目标
                 String time = item.getAimTime() + (item.getAimTimeType() == PlansModel.TIME_TYPE_HOUR ? "小时" : "分钟");
                 int timeValue = item.getAimTimeType() == PlansModel.TIME_TYPE_HOUR ? (item.getAimTime() * 60) :
                         item.getAimTime();
                 helper.setText(R.id.tv_tag_01, time + " - 目标");
-                helper.setVisible(R.id.tv_tag_02, true);
-                helper.setVisible(R.id.tv_tag_03, true);
-                helper.setVisible(R.id.tv_tag_04, true);
+                if ( item.getCurrFlag() == 0 ) {
+                    helper.setVisible(R.id.tv_tag_02, true);
+                    helper.setVisible(R.id.tv_tag_03, true);
+                    helper.setVisible(R.id.tv_tag_04, true);
+                } else {
+                    helper.setVisible(R.id.tv_tag_02, false);
+                    helper.setVisible(R.id.tv_tag_03, false);
+                    helper.setVisible(R.id.tv_tag_04, false);
+                }
 
                 if ( simpleDateFormat == null ) {
                     simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 }
                 try {
-                    helper.setText(R.id.tv_tag_04, "离计划结束:" +
-                            StringUtils.differentDays(new Date(), simpleDateFormat.parse(item.getAimEndTime())) + "天");
+                    int left = StringUtils.differentDays(new Date(), simpleDateFormat.parse(item.getAimEndTime()));
+                    if ( left <= 0 ) {
+                        //已过期
+                        helper.setBackgroundRes(R.id.ll_container, R.drawable.bg_button_round_orange);
+                        helper.setText(R.id.tv_tag_04, "已过期,不可用");
+                        helper.setText(R.id.tv_start, "已过期");
+                        helper.getView(R.id.tv_start).setEnabled(false);
+                    } else {
+                        //未过期
+                        helper.setText(R.id.tv_tag_04, "离计划结束:" +
+                                left + "天");
+                    }
+
                 } catch ( ParseException e ) {
                     e.printStackTrace();
                 }
@@ -434,18 +393,30 @@ public class PlanFragment extends BaseFragment {
                 if ( item.getNormalType() == PlansModel.NORMAL_TYPE_BJS ) {
                     //不计时
                     helper.setText(R.id.tv_tag_01, "普通待办");
-
-
                 } else if ( item.getNormalType() == PlansModel.NORMAL_TYPE_DJS ) {
                     //倒计时
                     String time = item.getNormalTime() + "分钟";
                     helper.setText(R.id.tv_tag_01, time + " - 倒计时");
                 } else if ( item.getNormalType() == PlansModel.NORMAL_TYPE_ZJS ) {
                     //正计时
-                    String time = item.getNormalTime() + "分钟";
-                    helper.setText(R.id.tv_tag_01, time + " - 正计时");
+                    helper.setText(R.id.tv_tag_01, "正计时");
                 }
             }
+
+            helper.getView(R.id.tv_start).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, PlaningActivityManager.class);
+                    intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, PlaningFragment.TAG);
+                    UnfinishedTaskModel u = new UnfinishedTaskModel();
+                    u.setState(2);
+                    u.setAimItem(item);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("bean", u);
+                    intent.putExtra(BaseFragmentActivity.ARGS, bundle);
+                    mActivity.startActivity(intent);
+                }
+            });
 
 
 //            TextView tv_flag = helper.getView(R.id.tv_flag);

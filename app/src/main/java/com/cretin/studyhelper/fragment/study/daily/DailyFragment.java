@@ -90,7 +90,7 @@ public class DailyFragment extends BaseFragment {
                 getData(currPage);
             }
         }, recyclerview);
-
+        adapter.setEmptyView(R.layout.empty_view);
         recyclerview.addItemDecoration(new ItemButtomDecoration(mActivity, 10));
         recyclerview.setAdapter(adapter);
 

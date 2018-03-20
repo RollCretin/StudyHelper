@@ -30,8 +30,11 @@ import java.util.GregorianCalendar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.qqtheme.framework.picker.DatePicker;
 import cn.qqtheme.framework.picker.SinglePicker;
 
@@ -93,6 +96,8 @@ public class AddPlanFragment extends BaseFragment {
     private int type;
     private String id;
 
+    private PlansModel currModel;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_add_plan;
@@ -119,54 +124,84 @@ public class AddPlanFragment extends BaseFragment {
         } else if ( type == TYPE_EDIT ) {
             setMainTitle("编辑计划");
             tvTips.setText("编辑计划");
-//            //获取信息并添加
-//            showDialog("加载中...");
-//            BmobQuery<PlanModel> query = new BmobQuery<PlanModel>();
-//            query.getObject(id, new QueryListener<PlanModel>() {
-//
-//                @Override
-//                public void done(PlanModel object, BmobException e) {
-//                    if ( e == null ) {
-//                        currModel = object;
-//                        tvStart.setText(object.getStartTimeValue());
-//                        tvStop.setText(object.getEndTimeValue());
-//                        edName.setText(object.getTitle());
-//                        edBeizhu.setText(object.getRemark());
-//                        String tixing = "";
-//                        //0 不提醒 1 提前5分钟 2 提前10分钟 3 提前半小时 4 提前一小时
-//                        switch ( object.getRemindFlag() ) {
-//                            case 0:
-//                                tixing = "不提醒";
-//                                break;
-//                            case 1:
-//                                tixing = "提前5分钟";
-//                                break;
-//                            case 2:
-//                                tixing = "提前10分钟";
-//                                break;
-//                            case 3:
-//                                tixing = "提前半小时";
-//                                break;
-//                            case 4:
-//                                tixing = "提前一小时";
-//                                break;
-//                        }
-//                        tvTixing.setText(tixing);
-//
-//                        selectTime = object.getStartTime();
-//                        selectTimeValue = object.getStartTimeValue();
-//                        endTime = object.getEndTime();
-//                        endTimeValue = object.getEndTimeValue();
-//                        selectMode = object.getRemindFlag();
-//
-//                        hidProgressView();
-//                    } else {
-//                        UiUtils.showToastInAnyThreadFail();
-//                        showErrorView();
-//                    }
-//                    stopDialog();
-//                }
-//            });
+            //获取信息并添加
+            showDialog("加载中...");
+            BmobQuery<PlansModel> query = new BmobQuery<PlansModel>();
+            query.getObject(id, new QueryListener<PlansModel>() {
+
+                @Override
+                public void done(PlansModel object, BmobException e) {
+                    if ( e == null ) {
+                        currModel = object;
+                        //不能换类型
+                        if ( object.getPlanType() == PlansModel.PLAN_TYPE_NORMAL ) {
+                            tvNormal.setEnabled(true);
+                            tvAim.setEnabled(false);
+                            tvNormal.setBackgroundResource(R.drawable.bg_button_round);
+                            tvNormal.setTextColor(Color.parseColor("#ffffff"));
+
+                            llNormal.setVisibility(View.VISIBLE);
+                            //类型
+                            if ( object.getNormalType() == PlansModel.NORMAL_TYPE_DJS ) {
+                                tvTypeDjs.performClick();
+                            } else if ( object.getNormalType() == PlansModel.NORMAL_TYPE_ZJS ) {
+                                tvTypeZjs.performClick();
+                                currNormalTime = 25;
+                                tvTime25.setBackgroundResource(R.drawable.bg_button_round);
+                                tvTime25.setTextColor(Color.parseColor("#ffffff"));
+                            } else if ( object.getNormalType() == PlansModel.NORMAL_TYPE_BJS ) {
+                                tvTypeBjs.performClick();
+                                currNormalTime = 25;
+                                tvTime25.setBackgroundResource(R.drawable.bg_button_round);
+                                tvTime25.setTextColor(Color.parseColor("#ffffff"));
+                            }
+                            //时间
+                            if ( object.getNormalTime() == 25 ) {
+                                tvTime25.setBackgroundResource(R.drawable.bg_button_round);
+                                tvTime25.setTextColor(Color.parseColor("#ffffff"));
+                            } else if ( object.getNormalTime() == 35 ) {
+                                tvTime35.setBackgroundResource(R.drawable.bg_button_round);
+                                tvTime35.setTextColor(Color.parseColor("#ffffff"));
+                            } else {
+                                tvTimeZdy.setBackgroundResource(R.drawable.bg_button_round);
+                                tvTimeZdy.setTextColor(Color.parseColor("#ffffff"));
+                                edNormalSc.setVisibility(View.VISIBLE);
+                                edNormalSc.setText(object.getNormalTime() + "");
+                            }
+                        } else {
+                            tvAim.setEnabled(true);
+                            tvNormal.setEnabled(false);
+                            tvAim.setBackgroundResource(R.drawable.bg_button_round);
+                            tvAim.setTextColor(Color.parseColor("#ffffff"));
+
+                            llAim.setVisibility(View.VISIBLE);
+
+                            tvSettimeAim.setText(object.getAimEndTime());
+                            tvTimetypeAim.setText(object.getAimTimeType() == PlansModel.TIME_TYPE_HOUR ? "小时" : "分钟");
+
+                            llShichang.setVisibility(View.GONE);
+                        }
+
+                        edName.setText(object.getPlanName());
+                        edBeizhu.setText(object.getRemark());
+
+                        currPlanType = object.getPlanType();
+                        currNromalType = object.getNormalType();
+                        //计时时长 默认25分钟
+                        currNormalTime = object.getNormalTime();
+                        //记录目标模式下的最后时间
+                        currAimEndTime = object.getAimEndTime();
+                        //记录目标模式下的时长类型
+                        currAimTimeType = object.getAimTimeType();
+
+                        hidProgressView();
+                    } else {
+                        UiUtils.showToastInAnyThreadFail();
+                        showErrorView();
+                    }
+                    stopDialog();
+                }
+            });
         }
     }
 
@@ -231,178 +266,166 @@ public class AddPlanFragment extends BaseFragment {
 
     //提交
     private void commit() {
-//        PlansModel post = new PlansModel();
-//        post.setObjectId("0fc065b6bd");
-//        List<PlanSingleTimeModel> list = new ArrayList<>();
-//        PlanSingleTimeModel planSingleTimeModel = new PlanSingleTimeModel();
-//        planSingleTimeModel.setTimes(2000);
-//        list.add(planSingleTimeModel);
-//        post.setSingleTimeModelList(list);
-//        post.update(new UpdateListener() {
-//            @Override
-//            public void done(BmobException e) {
-//                if ( e == null ) {
-//                    Log.i("bmob", "多对多关联添加成功");
-//                } else {
-//                    Log.i("bmob", "失败：" + e.getMessage());
-//                }
-//            }
-//        });
-
-
-        if ( type == TYPE_ADD ) {
-            CusUser user = KV.get(LocalStorageKeys.USER_INFO);
-            if ( user != null ) {
-                //检查数据
-                String title = edName.getText().toString().trim();
-                if ( TextUtils.isEmpty(title) ) {
-                    UiUtils.showToastInAnyThread("请填写标题");
-                    return;
-                }
-
-                if ( currPlanType == PlansModel.PLAN_TYPE_NORMAL ) {
-                    //普通计划
-                    PlansModel plansModel = new PlansModel();
-                    plansModel.setPlanType(PlansModel.PLAN_TYPE_NORMAL);
-                    int time = currNormalTime;
-                    if ( time == -1 ) {
-                        String times = edNormalSc.getText().toString().trim();
-                        if ( TextUtils.isEmpty(times) ) {
-                            UiUtils.showToastInAnyThread("请输入时间");
-                            return;
-                        }
-                        time = Integer.parseInt(times);
-                    }
-                    plansModel.setNormalTime(time);
-                    plansModel.setPlanName(title);
-                    plansModel.setNormalType(currNromalType);
-                    plansModel.setRemark(edBeizhu.getText().toString().trim());
-                    plansModel.setUserId(user.getObjectId());
-                    plansModel.setCurrFlag(0);
-                    showDialog("提交中...");
-                    plansModel.save(new SaveListener<String>() {
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if ( e == null ) {
-                                UiUtils.showToastInAnyThread();
-                                EventBus.getDefault().post(new StydyDataRegreshNotify());
-                                (( BackFragmentActivity ) mActivity).removeFragment();
-                            } else {
-                                UiUtils.showToastInAnyThreadFail();
-                            }
-                            stopDialog();
-                        }
-                    });
-                    return;
-                } else if ( currPlanType == PlansModel.PLAN_TYPE_AIM ) {
-                    //目标
-                    if ( TextUtils.isEmpty(currAimEndTime) ) {
-                        UiUtils.showToastInAnyThread("请设置时间");
-                        return;
-                    }
-                    String time = edScAim.getText().toString().trim();
-                    if ( TextUtils.isEmpty(time) ) {
-                        UiUtils.showToastInAnyThread("请输入时长");
-                        return;
-                    }
-                    showDialog("提交中...");
-                    PlansModel plansModel = new PlansModel();
-                    plansModel.setPlanType(PlansModel.PLAN_TYPE_AIM);
-                    plansModel.setUserId(user.getObjectId());
-                    plansModel.setAimEndTime(currAimEndTime);
-                    plansModel.setPlanName(title);
-                    plansModel.setRemark(edBeizhu.getText().toString().trim());
-                    plansModel.setAimTimeType(currAimTimeType);
-                    plansModel.setAimTime(Integer.parseInt(time));
-                    plansModel.setCurrFlag(0);
-                    plansModel.save(new SaveListener<String>() {
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if ( e == null ) {
-                                UiUtils.showToastInAnyThread();
-                                EventBus.getDefault().post(new StydyDataRegreshNotify());
-                                (( BackFragmentActivity ) mActivity).removeFragment();
-                            } else {
-                                UiUtils.showToastInAnyThreadFail();
-                            }
-                            stopDialog();
-                        }
-                    });
-                    return;
-                } else if ( currPlanType == PlansModel.PLAN_TYPE_HABIT ) {
-                    //习惯模式
-                    String time = edScHabit.getText().toString().trim();
-                    if ( TextUtils.isEmpty(time) ) {
-                        UiUtils.showToastInAnyThread("请输入时长");
-                        return;
-                    }
-                    showDialog("提交中...");
-                    PlansModel plansModel = new PlansModel();
-                    plansModel.setUserId(user.getObjectId());
-                    plansModel.setPlanType(PlansModel.PLAN_TYPE_HABIT);
-                    plansModel.setRemark(edBeizhu.getText().toString().trim());
-                    plansModel.setHabitType(currHabitType);
-                    plansModel.setPlanName(title);
-                    plansModel.setHabitTimeType(currHabitTimeType);
-                    plansModel.setCurrFlag(0);
-                    plansModel.setHabitTime(Integer.parseInt(time));
-                    plansModel.save(new SaveListener<String>() {
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if ( e == null ) {
-                                UiUtils.showToastInAnyThread();
-                                EventBus.getDefault().post(new StydyDataRegreshNotify());
-                                (( BackFragmentActivity ) mActivity).removeFragment();
-                            } else {
-                                UiUtils.showToastInAnyThreadFail();
-                            }
-                            stopDialog();
-                        }
-                    });
-                    return;
-                }
+        CusUser user = KV.get(LocalStorageKeys.USER_INFO);
+        if ( user != null ) {
+            //检查数据
+            String title = edName.getText().toString().trim();
+            if ( TextUtils.isEmpty(title) ) {
+                UiUtils.showToastInAnyThread("请填写标题");
+                return;
             }
-        } else {
-            //编辑
-//            String remark = edBeizhu.getText().toString().trim();
-//            String title = edName.getText().toString().trim();
-//            if ( TextUtils.isEmpty(title) ) {
-//                UiUtils.showToastInAnyThread("请填写标题");
-//                return;
-//            }
-//            //检查起始和结束时间
-//            if ( TextUtils.isEmpty(selectTime) ) {
-//                UiUtils.showToastInAnyThread("请选择起始时间");
-//                return;
-//            }
-//            if ( TextUtils.isEmpty(endTime) ) {
-//                UiUtils.showToastInAnyThread("请选择结束时间");
-//                return;
-//            }
-//            showDialog("提交中...");
-//            currModel.setEndTime(endTime);
-//            currModel.setEndTimeValue(endTimeValue);
-//            currModel.setStartTime(selectTime);
-//            currModel.setStartTimeValue(selectTimeValue);
-//            currModel.setRemark(remark);
-//            currModel.setRemindFlag(selectMode);
-//            currModel.setTitle(title);
-//            currModel.update(new UpdateListener() {
-//                @Override
-//                public void done(BmobException e) {
-//                    if ( e == null ) {
-//                        UiUtils.showToastInAnyThread();
-//                        (( BackFragmentActivity ) mActivity).removeFragment();
-//                        EventBus.getDefault().post(new StydyDataRegreshNotify());
-//                    } else {
-//                        UiUtils.showToastInAnyThreadFail();
-//                    }
-//                    stopDialog();
-//                }
-//            });
+
+            if ( currPlanType == PlansModel.PLAN_TYPE_NORMAL ) {
+                //普通计划
+                PlansModel plansModel = new PlansModel();
+                plansModel.setPlanType(PlansModel.PLAN_TYPE_NORMAL);
+                int time = currNormalTime;
+                if ( time == -1 ) {
+                    String times = edNormalSc.getText().toString().trim();
+                    if ( TextUtils.isEmpty(times) ) {
+                        UiUtils.showToastInAnyThread("请输入时间");
+                        return;
+                    }
+                    time = Integer.parseInt(times);
+                }
+                plansModel.setNormalTime(time);
+                plansModel.setPlanName(title);
+                plansModel.setNormalType(currNromalType);
+                plansModel.setRemark(edBeizhu.getText().toString().trim());
+                plansModel.setUserId(user.getObjectId());
+                plansModel.setCurrFlag(0);
+                showDialog("提交中...");
+                if ( type == TYPE_ADD ) {
+                    plansModel.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if ( e == null ) {
+                                UiUtils.showToastInAnyThread();
+                                EventBus.getDefault().post(new StydyDataRegreshNotify());
+                                (( BackFragmentActivity ) mActivity).removeFragment();
+                            } else {
+                                UiUtils.showToastInAnyThreadFail();
+                            }
+                            stopDialog();
+                        }
+                    });
+                } else {
+                    plansModel.update(id, new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if ( e == null ) {
+                                UiUtils.showToastInAnyThread();
+                                EventBus.getDefault().post(new StydyDataRegreshNotify());
+                                (( BackFragmentActivity ) mActivity).removeFragment();
+                            } else {
+                                UiUtils.showToastInAnyThreadFail();
+                            }
+                            stopDialog();
+                        }
+                    });
+                }
+                return;
+            } else if ( currPlanType == PlansModel.PLAN_TYPE_AIM ) {
+                //目标
+                if ( TextUtils.isEmpty(currAimEndTime) ) {
+                    UiUtils.showToastInAnyThread("请设置时间");
+                    return;
+                }
+                String time = edScAim.getText().toString().trim();
+                if ( TextUtils.isEmpty(time) ) {
+                    UiUtils.showToastInAnyThread("请输入时长");
+                    return;
+                }
+                showDialog("提交中...");
+                PlansModel plansModel = new PlansModel();
+                plansModel.setPlanType(PlansModel.PLAN_TYPE_AIM);
+                plansModel.setUserId(user.getObjectId());
+                plansModel.setAimEndTime(currAimEndTime);
+                plansModel.setPlanName(title);
+                plansModel.setRemark(edBeizhu.getText().toString().trim());
+                plansModel.setAimTimeType(currAimTimeType);
+                plansModel.setAimTime(Integer.parseInt(time));
+                plansModel.setCurrFlag(0);
+                if ( type == TYPE_ADD ) {
+                    plansModel.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if ( e == null ) {
+                                UiUtils.showToastInAnyThread();
+                                EventBus.getDefault().post(new StydyDataRegreshNotify());
+                                (( BackFragmentActivity ) mActivity).removeFragment();
+                            } else {
+                                UiUtils.showToastInAnyThreadFail();
+                            }
+                            stopDialog();
+                        }
+                    });
+                } else {
+                    plansModel.update(id, new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if ( e == null ) {
+                                UiUtils.showToastInAnyThread();
+                                EventBus.getDefault().post(new StydyDataRegreshNotify());
+                                (( BackFragmentActivity ) mActivity).removeFragment();
+                            } else {
+                                UiUtils.showToastInAnyThreadFail();
+                            }
+                            stopDialog();
+                        }
+                    });
+                }
+                return;
+            } else if ( currPlanType == PlansModel.PLAN_TYPE_HABIT ) {
+                //习惯模式
+                String time = edScHabit.getText().toString().trim();
+                if ( TextUtils.isEmpty(time) ) {
+                    UiUtils.showToastInAnyThread("请输入时长");
+                    return;
+                }
+                showDialog("提交中...");
+                PlansModel plansModel = new PlansModel();
+                plansModel.setUserId(user.getObjectId());
+                plansModel.setPlanType(PlansModel.PLAN_TYPE_HABIT);
+                plansModel.setRemark(edBeizhu.getText().toString().trim());
+                plansModel.setHabitType(currHabitType);
+                plansModel.setPlanName(title);
+                plansModel.setHabitTimeType(currHabitTimeType);
+                plansModel.setCurrFlag(0);
+                plansModel.setHabitTime(Integer.parseInt(time));
+                if ( type == TYPE_ADD ) {
+                    plansModel.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if ( e == null ) {
+                                UiUtils.showToastInAnyThread();
+                                EventBus.getDefault().post(new StydyDataRegreshNotify());
+                                (( BackFragmentActivity ) mActivity).removeFragment();
+                            } else {
+                                UiUtils.showToastInAnyThreadFail();
+                            }
+                            stopDialog();
+                        }
+                    });
+                } else {
+                    plansModel.update(id, new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if ( e == null ) {
+                                UiUtils.showToastInAnyThread();
+                                EventBus.getDefault().post(new StydyDataRegreshNotify());
+                                (( BackFragmentActivity ) mActivity).removeFragment();
+                            } else {
+                                UiUtils.showToastInAnyThreadFail();
+                            }
+                            stopDialog();
+                        }
+                    });
+                }
+                return;
+            }
         }
     }
-
 
     //打开提醒时间的选择器 0 目标模式下的时长类型 1 习惯下的类型 2 习惯下的时长类型
     private void openTimeSelect(final int type) {
@@ -437,13 +460,10 @@ public class AddPlanFragment extends BaseFragment {
                     currHabitTimeType = index;
                     tvTimetypeHabit.setText(item);
                 }
-
-
             }
         });
         picker.show();
     }
-
 
     @OnClick( {R.id.tv_normal, R.id.tv_aim, R.id.tv_habit, R.id.tv_settime_aim,
             R.id.tv_timetype_aim, R.id.tv_type_habit, R.id.tv_timetype_habit,
@@ -494,7 +514,7 @@ public class AddPlanFragment extends BaseFragment {
             case R.id.tv_type_zjs:
                 currNromalType = PlansModel.NORMAL_TYPE_ZJS;
                 resetBtn(1);
-                llShichang.setVisibility(View.VISIBLE);
+                llShichang.setVisibility(View.GONE);
                 tvTypeZjs.setBackgroundResource(R.drawable.bg_button_round);
                 tvTypeZjs.setTextColor(Color.parseColor("#ffffff"));
                 break;

@@ -241,7 +241,14 @@ public class PlanFragment extends BaseFragment {
                     int left = StringUtils.differentDays(new Date(), simpleDateFormat.parse(planModel.getAimEndTime()));
                     if ( left <= 0 ) {
                         //已过期
-                        flag = "未执行，已过期\n过期时间：" + planModel.getAimEndTime();
+                        if ( planModel.getSingleTimeModelList() != null && !planModel.getSingleTimeModelList().isEmpty() ) {
+                            //已执行了  为执行完
+                            flag = "未执行完成，已过期\n过期时间：" + planModel.getAimEndTime();
+                        } else {
+                            //压根未执行
+                            flag = "未执行，已过期\n过期时间：" + planModel.getAimEndTime();
+                        }
+
                     } else {
                         //未过期
                         flag = "执行中，未过期\n过期时间：" + planModel.getAimEndTime();
@@ -298,7 +305,6 @@ public class PlanFragment extends BaseFragment {
                         } else {
                             adapter.loadMoreComplete();
                         }
-//                        handlerData(list);
                         adapter.notifyDataSetChanged();
                     } else {
                         UiUtils.showToastInAnyThreadFail();
@@ -338,36 +344,35 @@ public class PlanFragment extends BaseFragment {
                 int timeValue = item.getAimTimeType() == PlansModel.TIME_TYPE_HOUR ? (item.getAimTime() * 60) :
                         item.getAimTime();
                 helper.setText(R.id.tv_tag_01, time + " - 目标");
+
+                helper.setVisible(R.id.tv_tag_02, true);
+                helper.setVisible(R.id.tv_tag_03, true);
+                helper.setVisible(R.id.tv_tag_04, true);
+
                 if ( item.getCurrFlag() == 0 ) {
-                    helper.setVisible(R.id.tv_tag_02, true);
-                    helper.setVisible(R.id.tv_tag_03, true);
-                    helper.setVisible(R.id.tv_tag_04, true);
-                } else {
-                    helper.setVisible(R.id.tv_tag_02, false);
-                    helper.setVisible(R.id.tv_tag_03, false);
-                    helper.setVisible(R.id.tv_tag_04, false);
+                    try {
+                        int left = StringUtils.differentDays(new Date(), simpleDateFormat.parse(item.getAimEndTime()));
+                        if ( left <= 0 ) {
+                            //已过期
+                            helper.setBackgroundRes(R.id.ll_container, R.drawable.bg_button_round_orange);
+                            helper.setText(R.id.tv_tag_04, "已过期,不可用");
+                            helper.setText(R.id.tv_start, "已过期");
+                            helper.getView(R.id.tv_start).setEnabled(false);
+                        } else {
+                            //未过期
+                            helper.setText(R.id.tv_tag_04, "离计划结束:" +
+                                    left + "天");
+                        }
+
+                    } catch ( ParseException e ) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if ( simpleDateFormat == null ) {
                     simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 }
-                try {
-                    int left = StringUtils.differentDays(new Date(), simpleDateFormat.parse(item.getAimEndTime()));
-                    if ( left <= 0 ) {
-                        //已过期
-                        helper.setBackgroundRes(R.id.ll_container, R.drawable.bg_button_round_orange);
-                        helper.setText(R.id.tv_tag_04, "已过期,不可用");
-                        helper.setText(R.id.tv_start, "已过期");
-                        helper.getView(R.id.tv_start).setEnabled(false);
-                    } else {
-                        //未过期
-                        helper.setText(R.id.tv_tag_04, "离计划结束:" +
-                                left + "天");
-                    }
 
-                } catch ( ParseException e ) {
-                    e.printStackTrace();
-                }
                 //获取时间
                 List<PlanSingleTimeModel> singleTimeModelList =
                         item.getSingleTimeModelList();
@@ -417,88 +422,6 @@ public class PlanFragment extends BaseFragment {
                     mActivity.startActivity(intent);
                 }
             });
-
-
-//            TextView tv_flag = helper.getView(R.id.tv_flag);
-//
-//            String flag = "";
-//            helper.setVisible(R.id.iv_naozhong, false);
-//            if ( item.getCurrFlag() == 0 ) {
-//                //进行中
-//                //根据时间来判断当前状态
-//                try {
-//                    long currTime = System.currentTimeMillis();
-//                    long startTime = simpleDateFormat.parse(item.getStartTime()).getTime();
-//                    long endTime = simpleDateFormat.parse(item.getEndTime()).getTime();
-//                    if ( currTime < startTime ) {
-//                        flag = "未开始...";
-//                        tv_flag.setTextColor(Color.parseColor("#03A9F4"));
-//                        checkTime(helper, item);
-//                    } else if ( currTime < endTime ) {
-//                        flag = "进行中...";
-//                        tv_flag.setTextColor(Color.parseColor("#2aa515"));
-//                    } else {
-//                        flag = "已超时...";
-//                        tv_flag.setTextColor(Color.parseColor("#F44336"));
-//                    }
-//                } catch ( ParseException e ) {
-//                    e.printStackTrace();
-//                }
-//                helper.setImageResource(R.id.tv_state, R.mipmap.select);
-//                helper.getView(R.id.tv_state).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        MyAlertDialog myAlertDialog = new MyAlertDialog(mActivity, "温馨提示",
-//                                "是否将《" + item.getTitle() + "》设置成已完成？");
-//                        myAlertDialog.setOnClickListener(new MyAlertDialog.OnPositiveClickListener() {
-//                            @Override
-//                            public void onPositiveClickListener(View v) {
-//                                showDialog("请稍后...");
-//                                //设置成已完成
-//                                item.setCurrFlag(1);
-//                                item.update(new UpdateListener() {
-//                                    @Override
-//                                    public void done(BmobException e) {
-//                                        stopDialog();
-//                                        if ( e == null ) {
-//                                            UiUtils.showToastInAnyThread("操作成功");
-//                                            handlerData(list);
-//                                            adapter.notifyDataSetChanged();
-//                                        } else {
-//                                            UiUtils.showToastInAnyThreadFail();
-//                                            helper.setImageResource(R.id.tv_state, R.mipmap.select);
-//                                        }
-//                                    }
-//                                });
-//                            }
-//                        });
-//                        myAlertDialog.setOnNegativeListener(new MyAlertDialog.OnNegativeClickListener() {
-//                            @Override
-//                            public void onNegativeClickListener(View v) {
-//                            }
-//                        });
-//                        myAlertDialog.show();
-//                    }
-//                });
-//            } else {
-//                //已完成
-//                flag = "已完成...";
-//                tv_flag.setTextColor(Color.parseColor("#9b9b9b"));
-//                helper.setImageResource(R.id.tv_state, R.mipmap.select_done);
-//            }
-//            if ( item.isFirst() ) {
-//                helper.getView(R.id.tv_show).setVisibility(View.VISIBLE);
-//                if ( item.getCurrFlag() == 0 ) {
-//                    helper.setText(R.id.tv_show, "进行中");
-//                } else {
-//                    helper.setText(R.id.tv_show, "已完成");
-//                }
-//            } else {
-//                helper.getView(R.id.tv_show).setVisibility(View.GONE);
-//            }
-//
-//            helper.setText(R.id.tv_time, StringUtils.formatTimeStr(item.getStartTimeValue(), "yy/MM/dd HH:mm"));
-//            helper.setText(R.id.tv_flag, flag);
         }
     }
 

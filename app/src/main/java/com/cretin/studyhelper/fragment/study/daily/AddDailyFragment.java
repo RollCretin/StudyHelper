@@ -171,6 +171,7 @@ public class AddDailyFragment extends BaseFragment {
         dailyModel.setSubjectValue(Integer.parseInt(currSubject.split(" ")[0]));
         dailyModel.setUserId(cusUser.getObjectId());
         dailyModel.setTime(Integer.parseInt(time));
+        dailyModel.setCusUser(cusUser);
         dailyModel.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {

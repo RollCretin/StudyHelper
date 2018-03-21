@@ -24,6 +24,15 @@ public class DailyModel extends BmobObject {
     private String remark;
     //所属用户
     private String userId;
+    private CusUser cusUser;
+
+    public CusUser getCusUser() {
+        return cusUser;
+    }
+
+    public void setCusUser(CusUser cusUser) {
+        this.cusUser = cusUser;
+    }
 
     public String getDate() {
         return date;

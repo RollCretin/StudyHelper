@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:paddingTop="8dp"
+            android:text="0/300字"
+            android:textColor="@color/font_black4"
+            android:textSize="12sp"/>
+
+        <EditText
+            android:id="@+id/ed_common_send_comtent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:gravity="left"
+            android:hint="请写下您的内容..."
+            android:lineSpacingExtra="6dp"
+            android:maxLines="10"
+            android:padding="16dp"
+            android:textColor="#333333"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rela_img_container"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/ed_common_send_comtent"
+        android:layout_marginLeft="16dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/gv_common_send_pics"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/avatar"
+            />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="3dp"
+            android:src="@mipmap/publish_delete"
+            android:visibility="visible"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="请选择要发布在哪个吧 >"
+        android:textColor="@color/black_333333"
+        android:textSize="14sp"/>
+
+    <include layout="@layout/lined8"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp">
+
+        <!--<ImageView-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:padding="10dp"-->
+        <!--android:src="@mipmap/aite"/>-->
+
+        <ImageView
+            android:id="@+id/iv_pic"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="8dp"
+            android:padding="10dp"
+            android:src="@mipmap/addpic"/>
+
+    </LinearLayout>
+
+</LinearLayout>

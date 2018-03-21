@@ -79,6 +79,23 @@
         <activity
             android:name="com.cretin.studyhelper.ui.manager.MeActivityManager"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.cretin.studyhelper.ui.ShowBigPicActivity"
+            />
+        <activity
+            android:name="com.cretin.studyhelper.ui.manager.PostActivityManager"
+            android:screenOrientation="portrait"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/install_file"/>
+        </provider>
     </application>
 
 </manifest>

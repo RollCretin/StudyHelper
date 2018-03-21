@@ -20,6 +20,7 @@ import com.cretin.studyhelper.base.BaseFragment;
 import com.cretin.studyhelper.base.BaseFragmentActivity;
 import com.cretin.studyhelper.eventbus.TimeUpNotify;
 import com.cretin.studyhelper.fragment.TestFragment;
+import com.cretin.studyhelper.fragment.follow.FollowFragment;
 import com.cretin.studyhelper.fragment.me.MeFragment;
 import com.cretin.studyhelper.fragment.study.StudyFragment;
 import com.cretin.studyhelper.fragment.study.plan.PlaningFragment;
@@ -173,7 +174,7 @@ public class MainActivity extends BaseActivity {
             if ( position == 0 ) {
                 fragment = new TestFragment();
             } else if ( position == 1 ) {
-                fragment = new TestFragment();
+                fragment = new FollowFragment();
             } else if ( position == 2 ) {
                 fragment = new StudyFragment();
             } else if ( position == 3 ) {

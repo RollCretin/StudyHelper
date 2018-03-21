@@ -14,7 +14,9 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.cetin.studyhelper.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -90,6 +92,17 @@ public class DailyFragment extends BaseFragment {
                 getData(currPage);
             }
         }, recyclerview);
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(mActivity, StudyActivityManager.class);
+                intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, DailyDetailsFragment.TAG);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", list.get(position).getObjectId());
+                intent.putExtra(BaseFragmentActivity.ARGS, bundle);
+                mActivity.startActivity(intent);
+            }
+        });
         adapter.setEmptyView(R.layout.empty_view);
         recyclerview.addItemDecoration(new ItemButtomDecoration(mActivity, 10));
         recyclerview.setAdapter(adapter);
@@ -120,6 +133,7 @@ public class DailyFragment extends BaseFragment {
             query.addWhereEqualTo("userId", cusUser.getObjectId());
             query.setLimit(10);
             query.setSkip(page * 10);
+            query.include("cusUser");
             query.order("-createdAt");
             query.findObjects(new FindListener<DailyModel>() {
                 @Override
@@ -155,22 +169,34 @@ public class DailyFragment extends BaseFragment {
         @Override
         protected void convert(final BaseViewHolder helper, final DailyModel item) {
             helper.setText(R.id.tv_time, item.getCreatedAt());
+            CusUser cusUser = item.getCusUser();
             if ( cusUser != null ) {
                 String nick = cusUser.getNickname();
                 if ( TextUtils.isEmpty(nick) ) {
                     nick = cusUser.getUsername();
                 }
                 helper.setText(R.id.tv_name, nick);
+
+                if ( !TextUtils.isEmpty(cusUser.getAvatar()) ) {
+                    Glide.with(mActivity).load(cusUser.getAvatar()).into(
+                            ( ImageView ) helper.getView(R.id.iv_avatar)
+                    );
+                } else {
+                    helper.setImageResource(R.id.iv_avatar, R.mipmap.avatar);
+                }
+
             } else {
                 helper.setText(R.id.tv_name, "未设置昵称");
+                helper.setImageResource(R.id.iv_avatar, R.mipmap.avatar);
             }
+
             String remark = "无备注";
             if ( !TextUtils.isEmpty(item.getRemark()) ) {
                 remark = item.getRemark();
             }
             //拼接数据
             StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append("工作日期：" + item.getDate() + "\n");
+            stringBuffer.append("学习日期：" + item.getDate() + "\n");
             stringBuffer.append("学习科目：" + item.getSubject() + "\n");
             stringBuffer.append("今日完成任务：" + item.getFinish() + "\n");
             stringBuffer.append("未完成任务：" + item.getUnfinish() + "\n");
@@ -191,7 +217,7 @@ public class DailyFragment extends BaseFragment {
                     , result.indexOf(item.getUnfinish()), result.indexOf(item.getUnfinish()) + item.getUnfinish().length()
                     , Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#000000"))
-                    , result.indexOf(item.getTime() + ""), result.indexOf(item.getTime() + "") + (item.getTime() + "").length() + 2
+                    , result.indexOf(item.getTime() + "小时"), result.indexOf(item.getTime() + "小时") + (item.getTime() + "小时").length()
                     , Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#000000"))
                     , result.indexOf(remark), result.indexOf(remark) + remark.length()

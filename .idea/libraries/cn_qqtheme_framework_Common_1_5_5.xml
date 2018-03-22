@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="cn.qqtheme.framework:Common-1.5.5">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/cn.qqtheme.framework/Common/1.5.5/res" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/cn.qqtheme.framework/Common/1.5.5/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cn.qqtheme.framework/Common/1.5.5/639faec4e5b0d861b79a74128fa2223fcf958a08/Common-1.5.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

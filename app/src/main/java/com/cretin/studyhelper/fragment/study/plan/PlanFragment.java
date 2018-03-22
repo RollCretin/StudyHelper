@@ -25,7 +25,7 @@ import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.PlanSingleTimeModel;
 import com.cretin.studyhelper.model.PlansModel;
 import com.cretin.studyhelper.model.UnfinishedTaskModel;
-import com.cretin.studyhelper.ui.manager.PlaningActivityManager;
+import com.cretin.studyhelper.ui.manager.CommonBackActivityManager;
 import com.cretin.studyhelper.ui.manager.StudyActivityManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.StringUtils;
@@ -89,7 +89,7 @@ public class PlanFragment extends BaseFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mActivity, StudyActivityManager.class);
+                Intent intent = new Intent(mActivity, CommonBackActivityManager.class);
                 intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, AddPlanFragment.TAG);
                 Bundle bundle = new Bundle();
                 bundle.putInt("type", AddPlanFragment.TYPE_ADD);
@@ -411,7 +411,7 @@ public class PlanFragment extends BaseFragment {
             helper.getView(R.id.tv_start).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, PlaningActivityManager.class);
+                    Intent intent = new Intent(mActivity, CommonBackActivityManager.class);
                     intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, PlaningFragment.TAG);
                     UnfinishedTaskModel u = new UnfinishedTaskModel();
                     u.setState(2);

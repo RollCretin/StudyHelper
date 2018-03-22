@@ -2,6 +2,7 @@ package com.cretin.studyhelper.fragment.study.daily;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,11 +14,16 @@ import com.cetin.studyhelper.R;
 import com.cretin.studyhelper.app.LocalStorageKeys;
 import com.cretin.studyhelper.base.BackFragmentActivity;
 import com.cretin.studyhelper.base.BaseFragment;
+import com.cretin.studyhelper.eventbus.CommonCloseNotify;
 import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.DailyModel;
 import com.cretin.studyhelper.model.StudyDataModel;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.UiUtils;
+import com.cretin.studyhelper.view.MyAlertDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +82,15 @@ public class AddDailyFragment extends BaseFragment {
     @Override
     protected void initView(View contentView, Bundle savedInstanceState) {
         setMainTitle("写日报");
+        removeLeftListener();
+        setOnTitleAreaCliclkListener(new OnTitleAreaCliclkListener() {
+            @Override
+            public void onTitleAreaClickListener(View view) {
+                if ( view.getId() == R.id.iv_back ) {
+                    showCLoseDialog();
+                }
+            }
+        });
     }
 
     @Override
@@ -234,5 +249,33 @@ public class AddDailyFragment extends BaseFragment {
             }
         });
         picker.show();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void commonCloseNotify(CommonCloseNotify event) {
+        showCLoseDialog();
+    }
+
+    private void showCLoseDialog() {
+        MyAlertDialog myAlertDialog = new MyAlertDialog(mActivity, "提示", "确定放弃已编辑的内容？");
+        myAlertDialog.setOnClickListener(new MyAlertDialog.OnPositiveClickListener() {
+            @Override
+            public void onPositiveClickListener(View v) {
+                (( BackFragmentActivity ) mActivity).closeAllFragment();
+            }
+        });
+        myAlertDialog.show();
     }
 }

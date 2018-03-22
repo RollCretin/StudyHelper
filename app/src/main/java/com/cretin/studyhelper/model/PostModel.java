@@ -1,5 +1,7 @@
 package com.cretin.studyhelper.model;
 
+import java.util.List;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -18,6 +20,26 @@ public class PostModel extends BmobObject {
     private String picUrl;
     //帖子所属的分类
     private PostTypeModel typeModel;
+    //收藏的数量
+    private int likeCount;
+    //点赞的人员的id
+    private List<String> likeUsers;
+
+    public List<String> getLikeUsers() {
+        return likeUsers;
+    }
+
+    public void setLikeUsers(List<String> likeUsers) {
+        this.likeUsers = likeUsers;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
 
     public CusUser getCusUser() {
         return cusUser;

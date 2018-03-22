@@ -26,6 +26,7 @@ import com.cretin.studyhelper.base.BaseFragment;
 import com.cretin.studyhelper.base.BaseFragmentActivity;
 import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.DailyModel;
+import com.cretin.studyhelper.ui.manager.CommonBackActivityManager;
 import com.cretin.studyhelper.ui.manager.StudyActivityManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.UiUtils;
@@ -113,7 +114,7 @@ public class DailyFragment extends BaseFragment {
 
     @OnClick( R.id.fab )
     public void onViewClicked() {
-        Intent intent = new Intent(mActivity, StudyActivityManager.class);
+        Intent intent = new Intent(mActivity, CommonBackActivityManager.class);
         intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, AddDailyFragment.TAG);
         Bundle bundle = new Bundle();
         bundle.putInt("type", AddDailyFragment.TYPE_ADD);

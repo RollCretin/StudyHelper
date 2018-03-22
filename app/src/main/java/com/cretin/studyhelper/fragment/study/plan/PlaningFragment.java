@@ -16,7 +16,7 @@ import com.cetin.studyhelper.R;
 import com.cretin.studyhelper.app.LocalStorageKeys;
 import com.cretin.studyhelper.base.BackFragmentActivity;
 import com.cretin.studyhelper.base.BaseFragment;
-import com.cretin.studyhelper.eventbus.ClosePlaningNotify;
+import com.cretin.studyhelper.eventbus.CommonCloseNotify;
 import com.cretin.studyhelper.eventbus.StydyDataRegreshNotify;
 import com.cretin.studyhelper.eventbus.TimeUpNotify;
 import com.cretin.studyhelper.model.PlanSingleTimeModel;
@@ -305,7 +305,7 @@ public class PlaningFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void closePlaningNotify(ClosePlaningNotify event) {
+    public void closePlaningNotify(CommonCloseNotify event) {
         if ( passTime <= 5 ) {
             UiUtils.showToastInAnyThread("不记录5s以内的任务");
             (( BackFragmentActivity ) mActivity).removeFragment();

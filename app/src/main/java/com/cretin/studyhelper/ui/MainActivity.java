@@ -25,7 +25,7 @@ import com.cretin.studyhelper.fragment.me.MeFragment;
 import com.cretin.studyhelper.fragment.study.StudyFragment;
 import com.cretin.studyhelper.fragment.study.plan.PlaningFragment;
 import com.cretin.studyhelper.model.UnfinishedTaskModel;
-import com.cretin.studyhelper.ui.manager.PlaningActivityManager;
+import com.cretin.studyhelper.ui.manager.CommonBackActivityManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.NotifyHelper;
 import com.cretin.studyhelper.utils.UiUtils;
@@ -69,7 +69,7 @@ public class MainActivity extends BaseActivity {
         //检查有没有数据没有处理完
         UnfinishedTaskModel unfinishedTaskModel = KV.get(LocalStorageKeys.UNFINISH_TASK);
         if ( unfinishedTaskModel != null ) {
-            Intent intent = new Intent(this, PlaningActivityManager.class);
+            Intent intent = new Intent(this, CommonBackActivityManager.class);
             intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, PlaningFragment.TAG);
             Bundle bundle = new Bundle();
             bundle.putSerializable("bean", unfinishedTaskModel);

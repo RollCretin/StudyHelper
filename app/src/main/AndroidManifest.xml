@@ -71,7 +71,7 @@
             android:name="com.cretin.studyhelper.ui.manager.StudyActivityManager"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.cretin.studyhelper.ui.manager.PlaningActivityManager"
+            android:name="com.cretin.studyhelper.ui.manager.CommonBackActivityManager"
             android:screenOrientation="portrait"/>
         <activity
             android:name="com.cretin.studyhelper.ui.PermissionsActivity"

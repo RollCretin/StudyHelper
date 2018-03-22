@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_item_bg_selector_all">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="测评发布说明"
+            android:textColor="@color/font_black1"
+            android:textSize="17sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="怎么发布测评？"
+            android:textColor="@color/common_color"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:lineSpacingExtra="4dp"
+            android:text="1、点击发布测评按钮，您可以在文件列表中选择你要发布的测评文件(文件必须以.txt结尾)，系统会自动的分析测评文件，分析成功之后您可以预览测评效果；"
+            android:textColor="@color/font_black2"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="测评文件格式要求？"
+            android:textColor="@color/common_color"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:lineSpacingExtra="4dp"
+            android:text="1、目前只支持txt文件，并且需要完全按照以下格式，否则系统将不能解析成功；一道题目分成5行显示，第一行显示题干，第一行的最后显示本题目的正确答案，正确答案以只能是A,B,C,D中的一个；第二行到第五行分别为这道题的四个答案；如下所示：\n1、下面选项中是动物的是()。A\nA、猴子\nB、西瓜\nC、篮球\nD、兰顿之兆"
+            android:textColor="@color/font_black2"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_start"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_round100"
+            android:padding="10dp"
+            android:text="已了解,发布测评"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="6dp"
+        android:padding="10dp"
+        android:src="@mipmap/close"/>
+
+</RelativeLayout>

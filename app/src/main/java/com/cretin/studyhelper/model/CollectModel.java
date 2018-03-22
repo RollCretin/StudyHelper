@@ -16,7 +16,9 @@ public class CollectModel extends BmobObject {
     private PostModel postModel;
     //收藏的内容 日报
     private DailyModel dailyModel;
-    //收藏的类型 0 帖子 1 日报  目前只支持帖子
+    //收藏的内容 评测
+    private EvaluationModel evaluationModel;
+    //收藏的类型 0 帖子 1 日报 2 评测 目前只支持帖子
     private int type;
     //收藏的用户id
     private String userId;
@@ -25,6 +27,14 @@ public class CollectModel extends BmobObject {
 
     public String getContentId() {
         return contentId;
+    }
+
+    public EvaluationModel getEvaluationModel() {
+        return evaluationModel;
+    }
+
+    public void setEvaluationModel(EvaluationModel evaluationModel) {
+        this.evaluationModel = evaluationModel;
     }
 
     public void setContentId(String contentId) {

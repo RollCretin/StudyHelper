@@ -52,6 +52,7 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile('cn.qqtheme.framework:FilePicker:1.5.5') {
         exclude group: 'com.android.support'
+        exclude group: 'cn.qqtheme.framework'
     }
     //RecyclerView适配器
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'

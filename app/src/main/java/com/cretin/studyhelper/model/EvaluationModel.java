@@ -1,7 +1,5 @@
 package com.cretin.studyhelper.model;
 
-import com.cretin.studyhelper.fragment.follow.evaluation.TestModel;
-
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
@@ -26,6 +24,16 @@ public class EvaluationModel extends BmobObject{
     private int joinNums;
     //参与用户的id集合
     private List<String> joinUsers;
+    //测评的描述
+    private String describe;
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
 
     public CusUser getCusUser() {
         return cusUser;

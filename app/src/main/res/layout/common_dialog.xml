@@ -30,13 +30,14 @@
             android:background="@color/light_grey" />
     </LinearLayout>
 
-
     <TextView
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
         android:id="@+id/dialog_content"
         android:layout_width="match_parent"
         android:minHeight="80dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/dialog_bg_selector_left_right_top"
+        android:background="@color/white"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:text="确定要退出登录?"

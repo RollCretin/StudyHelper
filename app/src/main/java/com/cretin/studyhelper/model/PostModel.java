@@ -12,6 +12,8 @@ import cn.bmob.v3.BmobObject;
 public class PostModel extends BmobObject {
     //发布帖子的用户
     private CusUser cusUser;
+    //发布帖子的用户的id
+    private String userId;
     //所属分类的id
     private String typeId;
     //帖子内容
@@ -24,6 +26,14 @@ public class PostModel extends BmobObject {
     private int likeCount;
     //点赞的人员的id
     private List<String> likeUsers;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public List<String> getLikeUsers() {
         return likeUsers;

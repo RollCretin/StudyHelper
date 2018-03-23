@@ -1,6 +1,7 @@
 package com.cretin.studyhelper.fragment.study.daily;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -25,14 +26,20 @@ import com.cetin.studyhelper.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cretin.studyhelper.app.LocalStorageKeys;
+import com.cretin.studyhelper.base.BackFragmentActivity;
 import com.cretin.studyhelper.base.BaseFragment;
+import com.cretin.studyhelper.base.BaseFragmentActivity;
+import com.cretin.studyhelper.fragment.me.CommonUserInfoFragment;
 import com.cretin.studyhelper.model.CommentModel;
 import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.DailyModel;
+import com.cretin.studyhelper.model.UserShareModel;
+import com.cretin.studyhelper.ui.manager.MeActivityManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.UiUtils;
 import com.cretin.studyhelper.view.CircleImageView;
 import com.cretin.studyhelper.view.ItemButtomDecoration;
+import com.cretin.studyhelper.view.MyAlertDialog;
 import com.cretin.studyhelper.view.SelectPopupWindow;
 
 import java.util.ArrayList;
@@ -42,6 +49,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -68,6 +76,8 @@ public class DailyDetailsFragment extends BaseFragment {
 
     private String id;
 
+    private DailyModel currItem;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_daily_details;
@@ -86,7 +96,88 @@ public class DailyDetailsFragment extends BaseFragment {
         setMainTitle("日报详情");
         id = getArguments().getString("id");
 
+        swipeRefresh.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData(0);
+            }
+        });
+
+        setMainRightIvRes(R.mipmap.fenxiang);
+        setOnTitleAreaCliclkListener(new OnTitleAreaCliclkListener() {
+            @Override
+            public void onTitleAreaClickListener(View view) {
+                if ( view.getId() == R.id.iv_right ) {
+                    //分享
+                    MyAlertDialog myAlertDialog = new MyAlertDialog(mActivity, "提示", "确定要分享此日报到首页给其他用户查看？");
+                    myAlertDialog.setOnClickListener(new MyAlertDialog.OnPositiveClickListener() {
+                        @Override
+                        public void onPositiveClickListener(View v) {
+                            shareToHome();
+                        }
+                    });
+                    shareToHome();
+                }
+            }
+        });
+
         initAlterDialog();
+    }
+
+    //分享到首页
+    private void shareToHome() {
+        if ( currItem == null ) {
+            //数据加载错误 请刷新
+            UiUtils.showToastInAnyThread("数据加载错误,请刷新后重试");
+            return;
+        }
+        showDialog("正在分享中...");
+        final CusUser cusUser = KV.get(LocalStorageKeys.USER_INFO);
+        //先查询是否分享过
+        BmobQuery<UserShareModel> query = new BmobQuery<UserShareModel>();
+        query.addWhereEqualTo("contentId", currItem.getObjectId());
+        query.addWhereEqualTo("userId", cusUser.getObjectId());
+        query.count(UserShareModel.class, new CountListener() {
+            @Override
+            public void done(Integer count, BmobException e) {
+                if ( e == null ) {
+                    if ( count == 0 ) {
+                        UserShareModel userShareModel = new UserShareModel();
+                        userShareModel.setCusUser(cusUser);
+                        userShareModel.setContentId(id);
+                        userShareModel.setDailyModel(currItem);
+                        userShareModel.setType(UserShareModel.TYPE_DAILY);
+                        userShareModel.setLikeCount(0);
+                        userShareModel.setUserId(cusUser.getObjectId());
+                        userShareModel.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                if ( e == null ) {
+                                    //分享成功
+                                    UiUtils.showToastInAnyThread();
+                                } else {
+                                    //分享失败
+                                    UiUtils.showToastInAnyThreadFail();
+                                }
+                                stopDialog();
+                            }
+                        });
+                    } else {
+                        UiUtils.showToastInAnyThread("您已经分享过该内容了，不要重复分享");
+                        stopDialog();
+                    }
+                } else {
+                    UiUtils.showToastInAnyThreadFail();
+                    stopDialog();
+                }
+            }
+        });
     }
 
     @Override
@@ -120,6 +211,7 @@ public class DailyDetailsFragment extends BaseFragment {
         tvContent = ( TextView ) view.findViewById(R.id.tv_content);
         tvTime = ( TextView ) view.findViewById(R.id.tv_time);
         tvName = ( TextView ) view.findViewById(R.id.tv_name);
+        view.findViewById(R.id.ll_container).setVisibility(View.GONE);
 
         ivAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,8 +265,9 @@ public class DailyDetailsFragment extends BaseFragment {
             @Override
             public void done(DailyModel item, BmobException e) {
                 if ( e == null ) {
+                    currItem = item;
                     //显示数据
-                    CusUser cusUser = item.getCusUser();
+                    final CusUser cusUser = item.getCusUser();
                     if ( cusUser != null ) {
                         String nick = cusUser.getNickname();
                         if ( TextUtils.isEmpty(nick) ) {
@@ -188,6 +281,17 @@ public class DailyDetailsFragment extends BaseFragment {
                         } else {
                             ivAvatar.setImageResource(R.mipmap.avatar);
                         }
+                        ivAvatar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(mActivity, MeActivityManager.class);
+                                intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, CommonUserInfoFragment.TAG);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("userId", cusUser.getObjectId());
+                                intent.putExtra(BaseFragmentActivity.ARGS, bundle);
+                                mActivity.startActivity(intent);
+                            }
+                        });
                     } else {
                         tvName.setText("未设置昵称");
                         ivAvatar.setImageResource(R.mipmap.avatar);
@@ -340,9 +444,6 @@ public class DailyDetailsFragment extends BaseFragment {
                     stopDialog();
                 }
             });
-
         }
-
-
     }
 }

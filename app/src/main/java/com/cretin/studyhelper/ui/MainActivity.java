@@ -19,8 +19,8 @@ import com.cretin.studyhelper.base.BaseActivity;
 import com.cretin.studyhelper.base.BaseFragment;
 import com.cretin.studyhelper.base.BaseFragmentActivity;
 import com.cretin.studyhelper.eventbus.TimeUpNotify;
-import com.cretin.studyhelper.fragment.TestFragment;
 import com.cretin.studyhelper.fragment.follow.FollowFragment;
+import com.cretin.studyhelper.fragment.home.HomeFragment;
 import com.cretin.studyhelper.fragment.me.MeFragment;
 import com.cretin.studyhelper.fragment.study.StudyFragment;
 import com.cretin.studyhelper.fragment.study.plan.PlaningFragment;
@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity {
         //在集合中取出来Fragment
         if ( fragment == null ) {  //如果再集合中没有取出来 需要重新创建
             if ( position == 0 ) {
-                fragment = new TestFragment();
+                fragment = HomeFragment.newInstance(HomeFragment.TYPE_HOME, "");
             } else if ( position == 1 ) {
                 fragment = new FollowFragment();
             } else if ( position == 2 ) {

@@ -1,5 +1,7 @@
 package com.cretin.studyhelper.model;
 
+import java.util.List;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -20,6 +22,16 @@ public class EvaResultModel extends BmobObject {
     private String evaluatuinId;
     //所属的测评
     private EvaluationModel evaluationModel;
+    //用户提价的答案
+    private List<Integer> answerIndex;
+
+    public List<Integer> getAnswerIndex() {
+        return answerIndex;
+    }
+
+    public void setAnswerIndex(List<Integer> answerIndex) {
+        this.answerIndex = answerIndex;
+    }
 
     public EvaluationModel getEvaluationModel() {
         return evaluationModel;

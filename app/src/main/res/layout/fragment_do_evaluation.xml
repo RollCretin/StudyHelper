@@ -32,4 +32,17 @@
         android:text="交卷"
         android:textColor="@color/white"
         android:textSize="17sp"/>
+
+    <TextView
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:id="@+id/tv_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#33000000"
+        android:lineSpacingExtra="3dp"
+        android:padding="10dp"
+        android:text="提示：灰色的√是你的答案，黄色的√是正确答案，如果题目显示答错了又没有灰色的√，说明这个题目你没有给出答案就提交了"
+        android:textColor="@color/white"
+        android:textSize="12sp"/>
 </RelativeLayout>

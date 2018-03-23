@@ -25,6 +25,7 @@ import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.PlanSingleTimeModel;
 import com.cretin.studyhelper.model.PlansModel;
 import com.cretin.studyhelper.model.UnfinishedTaskModel;
+import com.cretin.studyhelper.model.UserShareModel;
 import com.cretin.studyhelper.ui.manager.CommonBackActivityManager;
 import com.cretin.studyhelper.ui.manager.StudyActivityManager;
 import com.cretin.studyhelper.utils.KV;
@@ -46,7 +47,9 @@ import java.util.List;
 import butterknife.Bind;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
@@ -183,6 +186,15 @@ public class PlanFragment extends BaseFragment {
                     }
                 }));
             }
+        } else {
+            //已完成的计划才可以分享
+            builder.addItemAction(new PopItemAction("分享到主页", PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                @Override
+                public void onClick() {
+                    //去分享
+                    share(planModel);
+                }
+            }));
         }
         builder.addItemAction(new PopItemAction("删除计划", PopItemAction.PopItemStyle.Warning, new PopItemAction.OnClickListener() {
             @Override
@@ -191,6 +203,51 @@ public class PlanFragment extends BaseFragment {
             }
         })).addItemAction(new PopItemAction("取消", PopItemAction.PopItemStyle.Cancel));
         builder.create().show();
+    }
+
+    //分享计划到主页
+    private void share(final PlansModel model) {
+        showDialog("正在分享中...");
+        final CusUser cusUser = KV.get(LocalStorageKeys.USER_INFO);
+        //先查询是否分享过
+        BmobQuery<UserShareModel> query = new BmobQuery<UserShareModel>();
+        query.addWhereEqualTo("contentId", model.getObjectId());
+        query.addWhereEqualTo("userId", cusUser.getObjectId());
+        query.count(UserShareModel.class, new CountListener() {
+            @Override
+            public void done(Integer count, BmobException e) {
+                if ( e == null ) {
+                    if ( count == 0 ) {
+                        UserShareModel userShareModel = new UserShareModel();
+                        userShareModel.setCusUser(cusUser);
+                        userShareModel.setContentId(model.getObjectId());
+                        userShareModel.setPlansModel(model);
+                        userShareModel.setType(UserShareModel.TYPE_PLAN);
+                        userShareModel.setLikeCount(0);
+                        userShareModel.setUserId(cusUser.getObjectId());
+                        userShareModel.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                if ( e == null ) {
+                                    //分享成功
+                                    UiUtils.showToastInAnyThread();
+                                } else {
+                                    //分享失败
+                                    UiUtils.showToastInAnyThreadFail();
+                                }
+                                stopDialog();
+                            }
+                        });
+                    } else {
+                        UiUtils.showToastInAnyThread("您已经分享过该内容了，不要重复分享");
+                        stopDialog();
+                    }
+                } else {
+                    UiUtils.showToastInAnyThreadFail();
+                    stopDialog();
+                }
+            }
+        });
     }
 
     private void delete(final int position, PlansModel planModel) {
@@ -224,6 +281,7 @@ public class PlanFragment extends BaseFragment {
     }
 
     private SimpleDateFormat simpleDateFormat;
+
 
     private void showDetailsDialog(int position) {
         if ( simpleDateFormat == null )

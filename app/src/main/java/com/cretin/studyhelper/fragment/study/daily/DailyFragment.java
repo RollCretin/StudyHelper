@@ -24,9 +24,11 @@ import com.cretin.studyhelper.app.LocalStorageKeys;
 import com.cretin.studyhelper.base.BackFragmentActivity;
 import com.cretin.studyhelper.base.BaseFragment;
 import com.cretin.studyhelper.base.BaseFragmentActivity;
+import com.cretin.studyhelper.fragment.me.CommonUserInfoFragment;
 import com.cretin.studyhelper.model.CusUser;
 import com.cretin.studyhelper.model.DailyModel;
 import com.cretin.studyhelper.ui.manager.CommonBackActivityManager;
+import com.cretin.studyhelper.ui.manager.MeActivityManager;
 import com.cretin.studyhelper.ui.manager.StudyActivityManager;
 import com.cretin.studyhelper.utils.KV;
 import com.cretin.studyhelper.utils.UiUtils;
@@ -170,7 +172,7 @@ public class DailyFragment extends BaseFragment {
         @Override
         protected void convert(final BaseViewHolder helper, final DailyModel item) {
             helper.setText(R.id.tv_time, item.getCreatedAt());
-            CusUser cusUser = item.getCusUser();
+            final CusUser cusUser = item.getCusUser();
             if ( cusUser != null ) {
                 String nick = cusUser.getNickname();
                 if ( TextUtils.isEmpty(nick) ) {
@@ -185,7 +187,17 @@ public class DailyFragment extends BaseFragment {
                 } else {
                     helper.setImageResource(R.id.iv_avatar, R.mipmap.avatar);
                 }
-
+                helper.getView(R.id.iv_avatar).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, MeActivityManager.class);
+                        intent.putExtra(BackFragmentActivity.TAG_FRAGMENT, CommonUserInfoFragment.TAG);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userId", cusUser.getObjectId());
+                        intent.putExtra(BaseFragmentActivity.ARGS, bundle);
+                        mActivity.startActivity(intent);
+                    }
+                });
             } else {
                 helper.setText(R.id.tv_name, "未设置昵称");
                 helper.setImageResource(R.id.iv_avatar, R.mipmap.avatar);

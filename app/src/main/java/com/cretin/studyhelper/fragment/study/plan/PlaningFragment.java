@@ -171,6 +171,7 @@ public class PlaningFragment extends BaseFragment {
             tvTime.setText((minute < 10 ? ("0" + minute) : minute) + ":" + (second < 10 ? ("0" + second) : second));
 
         if ( allTime == 0 ) {
+            flag = true;
             //时间到了
             if ( mTimer != null ) {
                 mTimer.cancel();
@@ -188,7 +189,7 @@ public class PlaningFragment extends BaseFragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            //每半分钟存储一次数据
+            //每10s存储一次数据
             passTime++;
             if ( currModel != null ) {
                 if ( currModel.getPlanType() == PlansModel.PLAN_TYPE_AIM ) {
@@ -216,17 +217,20 @@ public class PlaningFragment extends BaseFragment {
 
     //保存现在的状态
     private void savaState() {
-        if ( passTime % 10 == 0 ) {
-            if ( unfinishedTaskModel == null ) {
-                unfinishedTaskModel = new UnfinishedTaskModel();
-                unfinishedTaskModel.setState(0);
-                unfinishedTaskModel.setAimItem(currModel);
-            }
-            unfinishedTaskModel.setPassedTime(passTime);
+        if ( !flag )
+            if ( passTime % 10 == 0 ) {
+                if ( unfinishedTaskModel == null ) {
+                    unfinishedTaskModel = new UnfinishedTaskModel();
+                    unfinishedTaskModel.setState(0);
+                    unfinishedTaskModel.setAimItem(currModel);
+                }
+                unfinishedTaskModel.setPassedTime(passTime);
 
-            KV.put(LocalStorageKeys.UNFINISH_TASK, unfinishedTaskModel);
-        }
+                KV.put(LocalStorageKeys.UNFINISH_TASK, unfinishedTaskModel);
+            }
     }
+
+    private boolean flag;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

@@ -4,6 +4,14 @@
                 android:layout_height="match_parent"
                 android:background="@color/white">
 
+    <ImageView
+        android:visibility="visible"
+        android:id="@+id/iv_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/xuexi"/>
+
     <LinearLayout
         android:id="@+id/ll_01"
         android:layout_width="match_parent"
@@ -13,11 +21,30 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="我是欢迎界面"
-            android:textColor="@color/font_black2"/>
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@mipmap/logo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="10dp"
+                android:text="Cretin学习管家\n让你的学习更加高效"
+                android:textColor="@color/common_color"
+                android:textSize="@dimen/text_size_20"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_copyright"

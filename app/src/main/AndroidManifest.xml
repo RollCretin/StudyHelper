@@ -85,6 +85,9 @@
         <activity
             android:name="com.cretin.studyhelper.ui.manager.PostActivityManager"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.cretin.studyhelper.ui.manager.HomeActivityManager"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
